@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SRK Enterprises - Prinky Print</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <style>
+    :root{--teal:#1a9e8f;--cream:#fdf8f2;--ink:#2d2320;--muted:#6b6560}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--ink)}
+    .hero{padding:56px 20px 36px;text-align:center;background:linear-gradient(135deg,#e6f7f5,#fdf8f2,#fff0e8)}
+    .badge{display:inline-block;background:#e6f7f5;color:var(--teal);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+    h1{margin:14px 0 10px;font-size:clamp(30px,5vw,52px);line-height:1.1}
+    .sub{max-width:720px;margin:0 auto;color:var(--muted);font-size:18px;line-height:1.6}
+    .btn{display:inline-block;margin-top:18px;background:var(--teal);color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700}
+    .sec{padding:54px 20px}
+    .wrap{max-width:1100px;margin:0 auto}
+    .title{text-align:center;font-size:36px;margin:0 0 8px}
+    .desc{text-align:center;color:var(--muted);margin:0 0 26px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;align-items:stretch}
+    .card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;flex-direction:column;height:100%}
+    .thumb{height:320px;background:#000;display:flex;align-items:center;justify-content:center;padding:10px}
+    .thumb img{width:100%;height:100%;object-fit:contain;display:block}
+    .label{padding:12px 14px;text-align:center;font-weight:700;margin-top:auto}
+    .cta{padding:52px 20px;text-align:center;background:linear-gradient(135deg,#7b4fa6,#a066c8);color:#fff}
+    .cta a{display:inline-block;margin-top:12px;background:#fff;color:#7b4fa6;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700}
+    .contact{padding:52px 20px;text-align:center;background:linear-gradient(135deg,#1a9e8f,#0d7a6e);color:#fff}
+    .contact .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+    .wa{background:#25d366;color:#fff;text-decoration:none;padding:11px 18px;border-radius:999px;font-weight:700}
+    footer{background:#2d2320;color:rgba(255,255,255,.65);text-align:center;padding:18px 12px;font-size:14px}
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <span class="badge">SRK Enterprises</span>
+    <h1>Colourful Prints,<br><span style="color:#1a9e8f">Crafted with Love</span></h1>
+    <p class="sub">Sample products from our print studio. For pricing and custom orders, contact us on WhatsApp.</p>
+    <a class="btn" href="#samples">View Samples</a>
+  </section>
+
+  <section id="samples" class="sec">
+    <div class="wrap">
+      <h2 class="title">Sample Products</h2>
+      <p class="desc">Tote bag, coffee mug, and t-shirt samples</p>
+      <div class="grid">
+        <article class="card">
+          <div class="thumb"><img src="/sample-totebag.png" alt="Tote Bag Sample" /></div>
+          <div class="label">Tote Bag Sample</div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="/sample-coffee-mug.png" alt="Coffee Mug Sample" /></div>
+          <div class="label">Coffee Mug Sample</div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="/sample-tshirt.png" alt="T-Shirt Sample" /></div>
+          <div class="label">T-Shirt Sample</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2 style="margin:0 0 8px;font-size:34px">Design Your Own Saree Blouse</h2>
+    <p style="margin:0 auto 4px;max-width:700px;color:rgba(255,255,255,.9)">Use our blouse designer tool to customize color, motifs and placements.</p>
+    <a href="/blouse-designer.html" target="_blank" rel="noopener noreferrer">Open Blouse Designer</a>
+  </section>
+
+  <section class="contact">
+    <h2 style="margin:0 0 6px;font-size:34px">Get in Touch</h2>
+    <p style="margin:0;color:rgba(255,255,255,.9)">For custom orders and bulk requirements</p>
+    <div class="row">
+      <a class="wa" href="https://wa.me/919840037602" target="_blank" rel="noopener noreferrer">WhatsApp: 98400 37602</a>
+      <a class="wa" href="https://wa.me/918754738777" target="_blank" rel="noopener noreferrer">WhatsApp: 87547 38777</a>
+    </div>
+  </section>
+
+  <footer>
+    &copy; <span id="y"></span> SRK Enterprises - Prinky Print. All rights reserved.
+  </footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
