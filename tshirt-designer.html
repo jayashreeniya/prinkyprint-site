@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>T-Shirt Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#1a9e8f;--gl:#e6f7f5;--cream:#fdf8f2;--dark:#2d2320;--mid:#6b6560;--bdr:#ece3d7;--acc:#0d7a6e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;overflow-x:hidden;}
+header{background:var(--dark);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.4);}
+header h1{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:.08em;color:var(--gl);}
+header h1 span{color:#faf7f2;}
+.badge{font-size:.62rem;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--dark);}
+.badge.cust{background:var(--acc);color:#fff;}
+.pwrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--bdr);padding:8px 18px;font-size:.78rem;}
+.pwrow[hidden]{display:none;}
+.pwrow input{padding:6px 9px;border:1.5px solid var(--bdr);border-radius:6px;font-family:inherit;min-width:0;}
+#pwmsg{color:#b3261e;}
+.app{display:grid;grid-template-columns:1fr 360px;min-height:calc(100vh - 50px);}
+.preview{padding:14px;display:flex;flex-direction:column;align-items:center;background:#f4efe8;gap:10px;}
+.sumbar{width:100%;max-width:460px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:.72rem;}
+.chip{background:#fff;border:1px solid var(--bdr);border-radius:20px;padding:4px 11px;color:var(--dark);display:flex;align-items:center;gap:6px;}
+.chip i{display:inline-block;width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.25);}
+.cw{border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1);background:#f4efe8;width:100%;max-width:460px;}
+#cv{display:block;width:100%;height:auto;}
+.zbar{display:flex;align-items:center;gap:8px;}
+.zbtn{width:30px;height:30px;border:1.5px solid var(--bdr);background:#fff;border-radius:50%;font-size:.95rem;cursor:pointer;color:var(--dark);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.zbtn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+.zlbl{font-size:.76rem;color:var(--mid);min-width:36px;text-align:center;}
+.actbar{display:flex;gap:7px;width:100%;max-width:460px;}
+.abtn{flex:1;padding:11px 4px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;}
+.asave{background:var(--dark);color:var(--gl);}.ashare{background:#25D366;color:#fff;}.areset{background:#fff;color:var(--mid);border:1.5px solid var(--bdr);}
+.ctrl{background:#fff;border-left:1px solid var(--bdr);overflow-y:auto;display:flex;flex-direction:column;max-height:calc(100vh - 50px);}
+.sec{padding:13px 15px;border-bottom:1px solid var(--bdr);}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.stitle::before{content:'';display:inline-block;width:3px;height:12px;background:var(--gold);border-radius:2px;}
+.stitle small{font-family:'DM Sans',sans-serif;font-weight:400;text-transform:none;letter-spacing:0;font-size:.7rem;}
+.segs{display:flex;gap:7px;flex-wrap:wrap;}
+.seg{flex:1;min-width:58px;padding:8px 4px;border:1.5px solid var(--bdr);background:#fff;border-radius:8px;font-size:.75rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;text-align:center;color:var(--dark);}
+.seg.on{background:var(--dark);color:var(--gl);border-color:var(--dark);}
+.seg:disabled{color:#b9b2aa;background:#f6f2ec;text-decoration:line-through;cursor:not-allowed;}
+.swatches{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px;}
+.sw{position:relative;width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid #fff;outline:1px solid rgba(0,0,0,.22);transition:all .15s;box-shadow:0 2px 5px rgba(0,0,0,.15);padding:0;}
+.sw.on{outline:2px solid var(--gold);transform:scale(1.15);}
+.sw:disabled{opacity:.35;cursor:not-allowed;}
+.sw:disabled::after{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:#555;transform:rotate(45deg);}
+.cname{font-size:.78rem;color:var(--dark);font-weight:500;}
+.note{font-size:.68rem;color:var(--mid);margin-top:7px;line-height:1.4;}
+.opt{display:flex;align-items:center;gap:7px;font-size:.73rem;color:var(--mid);margin-top:10px;cursor:pointer;}
+.lhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.upbtn{background:var(--gold);color:var(--dark);border:none;padding:6px 11px;border-radius:6px;font-size:.72rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+#fi,#ifi{display:none;}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:260px;overflow-y:auto;}
+.dtile{position:relative;border:2px solid var(--bdr);border-radius:8px;cursor:pointer;min-height:96px;overflow:hidden;background:#faf8f5;transition:all .15s;display:flex;flex-direction:column;justify-content:center;}
+.dtile:hover{border-color:var(--gold);}.dtile.on{border-color:var(--acc);box-shadow:0 0 0 2px rgba(13,122,110,.25);}
+.dtile img{width:100%;height:72px;object-fit:contain;padding:4px 6px;background:#fff;}
+.delbtn{position:absolute;top:2px;right:2px;min-width:18px;height:18px;background:rgba(170,20,20,.85);color:#fff;border:none;border-radius:9px;font-size:.63rem;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 5px;}
+.dlbl{background:#fff;color:var(--mid);font-size:.64rem;padding:3px 5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid var(--bdr);}
+.sprev{background:var(--cream);border-radius:8px;padding:8px 10px;margin-bottom:10px;display:flex;align-items:center;gap:8px;border:1px solid var(--bdr);min-height:48px;}
+.sprev img{width:52px;height:52px;object-fit:contain;border-radius:4px;background:#fff;}
+.sname{font-size:.77rem;font-weight:500;}.shint{font-size:.67rem;color:var(--mid);margin-top:1px;}
+.esel{font-size:.72rem;color:var(--mid);font-style:italic;}
+.empty{grid-column:1/-1;font-size:.74rem;color:var(--mid);font-style:italic;padding:14px 4px;text-align:center;}
+/* seller-only panel */
+.admin{background:#f3fbfa;border-bottom:2px solid #9ed8d2;}
+.admin .stitle{color:var(--acc);}
+.crows{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+.crow2{display:flex;align-items:center;gap:8px;font-size:.76rem;}
+.crow2 i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.25);flex:none;}
+.crow2 span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.xbtn{background:#fff;border:1px solid #e3b8b4;color:#a02a22;border-radius:6px;font-size:.66rem;padding:3px 8px;cursor:pointer;font-family:inherit;}
+.addrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.addrow input[type=text]{flex:1;min-width:90px;padding:6px 8px;border:1.5px solid var(--bdr);border-radius:6px;font-family:inherit;font-size:.75rem;}
+.addrow input[type=color]{width:34px;height:32px;border:1.5px solid var(--bdr);border-radius:6px;padding:2px;background:#fff;cursor:pointer;}
+.mwrap{overflow-x:auto;border:1px solid var(--bdr);border-radius:8px;background:#fff;}
+table.mx{border-collapse:collapse;width:100%;font-size:.72rem;}
+.mx th,.mx td{padding:5px 6px;text-align:center;border-bottom:1px solid var(--bdr);}
+.mx th:first-child,.mx td:first-child{text-align:left;white-space:nowrap;}
+.mx tr:last-child td{border-bottom:none;}
+.mx input{width:15px;height:15px;accent-color:var(--acc);cursor:pointer;}
+.mx button{background:none;border:none;color:var(--acc);font-size:.64rem;cursor:pointer;text-decoration:underline;font-family:inherit;}
+.seller-note{font-size:.66rem;color:var(--mid);background:var(--gl);border:1px solid #9ed8d2;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.45;}
+.disc{width:100%;max-width:460px;background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:11px 14px;font-size:.74rem;line-height:1.5;color:var(--mid);}
+.disc b{color:var(--dark);}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--dark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;transition:transform .3s;z-index:999;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+@media(max-width:680px){.app{grid-template-columns:1fr;}.ctrl{max-height:none;border-left:none;border-top:1px solid var(--bdr);}.preview{padding:10px;}.dgrid{max-height:155px;}}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>T-Shirt</span> Designer</h1>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button onclick="toggleMode()" id="modeBtn" style="background:rgba(255,255,255,0.15);color:#ff8c00;border:1px solid #ff8c00;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:500;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;font-family:'DM Sans',sans-serif;">Switch to Seller</button>
+    <span class="badge cust" id="badge">Buyer</span>
+  </div>
+</header>
+<div id="pwrow" class="pwrow" hidden><label for="pwin">Seller password</label><input id="pwin" type="password" autocomplete="off" onkeydown="if(event.key==='Enter')submitPw()"><button class="upbtn" onclick="submitPw()">Enter</button><span id="pwmsg"></span></div>
+<div class="app">
+  <div class="preview">
+    <div class="sumbar" id="sumbar"></div>
+    <div class="cw"><canvas id="cv"></canvas></div>
+    <div class="zbar">
+      <button class="zbtn" onclick="doZoom(-0.1)">&#8722;</button>
+      <span class="zlbl" id="zlbl">100%</span>
+      <button class="zbtn" onclick="doZoom(0.1)">+</button>
+    </div>
+    <div class="actbar">
+      <button class="abtn asave" onclick="saveImg()">&#128190; Save PNG</button>
+      <button class="abtn ashare" onclick="shareWA()">&#128242; WhatsApp</button>
+      <button class="abtn areset" onclick="resetAll()">&#10005; Reset</button>
+    </div>
+    <div class="disc"><b>Disclaimer:</b> Actual colors may vary from what you see on screen. All colors may not be available in all sizes.</div>
+  </div>
+  <div class="ctrl">
+    <div class="sec"><div class="stitle">Fit</div><div class="segs" id="gseg"></div><div class="note">Round collar cotton t-shirt</div></div>
+    <div class="sec"><div class="stitle">T-Shirt Colour</div><div class="swatches" id="sws"></div><div class="cname" id="cname"></div></div>
+    <div class="sec"><div class="stitle">T-Shirt Size</div><div class="segs" id="szseg"></div><div class="note" id="sznote"></div></div>
+    <div class="sec"><div class="stitle">Print Placement</div><div class="segs" id="pseg"></div></div>
+    <div class="sec"><div class="stitle">Design Size <small>(centred, inches)</small></div><div class="segs" id="dseg"></div>
+      <label class="opt"><input type="checkbox" id="tpick" checked onchange="S.transp=this.checked;render()"> Remove white background from design</label>
+    </div>
+    <div class="admin" id="admin" hidden>
+      <div class="sec">
+        <div class="stitle">Seller: Colours</div>
+        <div class="crows" id="colrows"></div>
+        <div class="addrow"><input type="text" id="ncname" maxlength="24" placeholder="Colour name"><input type="color" id="ncpick" value="#c0392b"><button class="upbtn" onclick="addColor()">Add colour</button></div>
+      </div>
+      <div class="sec">
+        <div class="stitle">Seller: Size Availability <small id="mxfor"></small></div>
+        <div class="mwrap"><table class="mx" id="mx"></table></div>
+        <div class="note">Tick the sizes you have in stock for each colour. Unticked sizes show as unavailable to buyers. Use the Fit buttons above to switch between Men and Women.</div>
+      </div>
+    </div>
+    <div class="sec" style="flex:1">
+      <div class="lhdr"><div class="stitle" style="margin-bottom:0">Design Library</div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;"><button class="upbtn" id="upbtn" onclick="document.getElementById('fi').click()" style="display:none">&#65291; Add Design</button><button class="upbtn" id="impbtn" onclick="document.getElementById('ifi').click()" style="display:none;background:#0f8f80;color:#fff;">Import</button><button class="upbtn" id="expbtn" onclick="exportData()" style="display:none;background:#0d7a6e;color:#fff;">Export</button></div><input type="file" id="fi" accept="image/*" multiple onchange="upload(event)"><input type="file" id="ifi" accept="application/json,.json,image/*" multiple onchange="importData(event)"></div>
+      <div class="seller-note" id="snote" hidden><b>Seller:</b> add designs, colours and size availability here. To show your changes to all buyers, tap <b>Export</b> and upload the downloaded <b>shared-tshirt-data.json</b> to the website (replace the old one).</div>
+      <div class="sprev" id="sprev"><span class="esel">No design selected &#8212; pick one below</span></div>
+      <div class="dgrid" id="dgrid"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// ── CONFIG ───────────────────────────────────────────────
+const SELLER_PASSWORD='blouse2024';          // change here to set a different seller password
+const WA_NUMBER='919840037602';
+const PUBLISHED_FILE='/shared-tshirt-data.json';
+const DB_NAME='tshirtDesigner', CFG_KEY='ts1_cfg', DEL_KEY='ts1_deleted';
+
+const SIZES={men:['S','M','L','XL','XXL','3XL'],women:['XS','S','M','L','XL','XXL']};
+const DSIZES=[8,10,12];
+const DEFAULT_COLORS=[
+  {id:'white',name:'White',hex:'#ffffff'},{id:'black',name:'Black',hex:'#1a1a1a'},{id:'navy',name:'Navy Blue',hex:'#1c2a4a'},
+  {id:'royal',name:'Royal Blue',hex:'#2a56b8'},{id:'red',name:'Red',hex:'#c0392b'},{id:'maroon',name:'Maroon',hex:'#7b1e2b'},
+  {id:'green',name:'Bottle Green',hex:'#2f5d3a'},{id:'yellow',name:'Yellow',hex:'#e8c547'},{id:'grey',name:'Grey Melange',hex:'#a3a8ae'},
+  {id:'pink',name:'Pink',hex:'#f2a1b8'}
+];
+let APP_MODE='customer';
+let cfg={updatedAt:0,colors:DEFAULT_COLORS.map(c=>({...c})),unavail:[]};   // unavail: ["men|navy|XL", ...]
+const S={gender:'men',color:'white',size:'M',dsize:10,place:'front',selId:null,zm:1,transp:true};
+
+// ── CONFIG HELPERS ───────────────────────────────────────
+const key=(g,c,s)=>g+'|'+c+'|'+s;
+const isAvail=(g,c,s)=>!cfg.unavail.includes(key(g,c,s));
+const colorHasStock=(g,c)=>SIZES[g].some(s=>isAvail(g,c,s));
+const getColor=id=>cfg.colors.find(c=>c.id===id);
+function saveCfg(){cfg.updatedAt=Date.now();try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg));}catch(e){}}
+function readLocalCfg(){try{const c=JSON.parse(localStorage.getItem(CFG_KEY)||'null');return c&&Array.isArray(c.colors)?c:null;}catch(e){return null;}}
+function fixSelection(){
+  if(!getColor(S.color)||!colorHasStock(S.gender,S.color)){
+    const c=cfg.colors.find(c=>colorHasStock(S.gender,c.id))||cfg.colors[0];S.color=c?c.id:null;
+  }
+  if(!S.color||!isAvail(S.gender,S.color,S.size)){
+    S.size=SIZES[S.gender].find(s=>isAvail(S.gender,S.color,s))||null;
+  }
+}
+
+// ── PERSISTENCE (designs): IndexedDB, metadata in localStorage ──
+let idb=null;
+function openDB(){return new Promise((res,rej)=>{if(idb){res(idb);return;}const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=e=>{e.target.result.createObjectStore('designs',{keyPath:'id'});};r.onsuccess=e=>{idb=e.target.result;res(idb);};r.onerror=rej;});}
+function dbOp(mode,fn,fallback){return openDB().then(db=>new Promise((res,rej)=>{const tx=db.transaction('designs',mode);const rq=fn(tx.objectStore('designs'));tx.oncomplete=()=>res(rq&&rq.result!==undefined?rq.result:undefined);tx.onerror=rej;})).catch(()=>fallback);}
+const dbPut=d=>dbOp('readwrite',s=>s.put(d));
+const dbDelete=id=>dbOp('readwrite',s=>s.delete(id));
+const dbGetAll=()=>dbOp('readonly',s=>s.getAll(),[]).then(r=>r||[]);
+
+let lib=[];
+let deleted=new Set();
+function saveLib(){try{localStorage.setItem(DEL_KEY,JSON.stringify([...deleted]));}catch(e){}lib.forEach(d=>dbPut(d));}
+async function loadAll(){
+  try{JSON.parse(localStorage.getItem(DEL_KEY)||'[]').forEach(x=>deleted.add(x));}catch(e){}
+  // published data (designs + colours + availability)
+  let pub=null;
+  try{const r=await fetch(PUBLISHED_FILE+'?t='+Date.now(),{cache:'no-store'});if(r.ok)pub=await r.json();}catch(e){}
+  let src=null;
+  if(pub&&pub.config&&Array.isArray(pub.config.colors))src={updatedAt:pub.updatedAt||0,colors:pub.config.colors,unavail:pub.config.unavail||[]};
+  const local=readLocalCfg();
+  if(local&&(!src||(local.updatedAt||0)>(src.updatedAt||0)))src=local;
+  if(src){cfg={updatedAt:src.updatedAt||0,colors:src.colors,unavail:src.unavail||[]};}
+  // designs: this device first, then published
+  (await dbGetAll()).forEach(d=>{if(d&&d.src&&!lib.find(x=>x.id===d.id)&&!deleted.has(d.id))lib.push(d);});
+  if(pub&&Array.isArray(pub.designs))pub.designs.forEach((d,i)=>{
+    if(!d||!d.src)return;const id=d.id||('pub'+i);
+    if(deleted.has(id)||lib.find(x=>x.id===id||x.src===d.src))return;
+    lib.push({id,label:d.label||('Design '+(i+1)),src:d.src});
+  });
+  fixSelection();preAll();buildAll();render();
+}
+
+// ── IMAGE HELPERS ────────────────────────────────────────
+const cache={},cacheSrc={},tCache={};
+function preOne(d){
+  if(!d||!d.src)return;
+  if(cache[d.id]&&cacheSrc[d.id]===d.src)return;
+  const i=new Image();i.onload=render;i.src=d.src;cache[d.id]=i;cacheSrc[d.id]=d.src;delete tCache[d.id];
+}
+function preAll(){lib.forEach(preOne);}
+function getTransparentImg(img,id){
+  if(tCache[id])return tCache[id];
+  const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+  const oc=document.createElement('canvas');oc.width=w;oc.height=h;
+  const ox=oc.getContext('2d');ox.drawImage(img,0,0);
+  try{
+    const im=ox.getImageData(0,0,w,h),d=im.data,seen=new Uint8Array(w*h),q=[];let qi=0;
+    const isBg=(x,y)=>{const i=(y*w+x)<<2;if(d[i+3]<8)return true;const r=d[i],g=d[i+1],b=d[i+2];return (r+g+b)/3>210&&(Math.max(r,g,b)-Math.min(r,g,b))<28;};
+    const push=(x,y)=>{const k=y*w+x;if(seen[k])return;seen[k]=1;q.push(k);};
+    for(let x=0;x<w;x++){if(isBg(x,0))push(x,0);if(isBg(x,h-1))push(x,h-1);}
+    for(let y=0;y<h;y++){if(isBg(0,y))push(0,y);if(isBg(w-1,y))push(w-1,y);}
+    while(qi<q.length){const k=q[qi++],x=k%w,y=(k/w)|0;
+      if(x>0&&!seen[k-1]&&isBg(x-1,y))push(x-1,y);
+      if(x<w-1&&!seen[k+1]&&isBg(x+1,y))push(x+1,y);
+      if(y>0&&!seen[k-w]&&isBg(x,y-1))push(x,y-1);
+      if(y<h-1&&!seen[k+w]&&isBg(x,y+1))push(x,y+1);}
+    for(let k=0;k<w*h;k++)if(seen[k])d[(k<<2)+3]=0;
+    for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const k=y*w+x;if(seen[k])continue;const i=k<<2;
+      const r=d[i],g=d[i+1],b=d[i+2];if((r+g+b)/3<190||(Math.max(r,g,b)-Math.min(r,g,b))>38)continue;
+      if(seen[k-1]||seen[k+1]||seen[k-w]||seen[k+w])d[i+3]=Math.round(d[i+3]*.35);}
+    ox.putImageData(im,0,0);
+  }catch(e){}
+  tCache[id]=oc;return oc;
+}
+function optimizeDataUrl(src,maxSide=900,quality=.85){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+      if(!w||!h){resolve(src);return;}
+      const sc=Math.min(1,maxSide/Math.max(w,h));
+      const c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*sc));c.height=Math.max(1,Math.round(h*sc));
+      const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(img,0,0,c.width,c.height);
+      let out='';try{out=c.toDataURL('image/webp',quality);}catch(e){}
+      if(!out||out.length<32||!out.startsWith('data:image/webp')){try{out=c.toDataURL('image/jpeg',quality);}catch(e){}}
+      resolve(out||src);
+    };
+    img.onerror=()=>resolve(src);img.src=src;
+  });
+}
+
+// ── T-SHIRT MOCKUP (base space 480 x 560, centre x = 240) ──
+const CW=480,CH=560,CXM=240,PX_PER_IN=13;
+// Right-half key points as offsets from the centre line. Men: 20in chest, Women: 18in chest.
+const CUT={
+  men:  {A:[56,66],B:[150,96],C:[214,190],D:[170,216],E:[132,196],W:[130,340],H:[134,506],hem:506,drop:{front:130,back:82},top:{front:168,back:122}},
+  women:{A:[50,68],B:[127,94],C:[186,168],D:[150,196],E:[116,178],W:[104,330],H:[121,484],hem:484,drop:{front:126,back:80},top:{front:164,back:120}}
+};
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+cv.width=CW*2;cv.height=CH*2;
+
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=(n>>8)&255,b=n&255;const f=amt<0?0:255,t=Math.abs(amt);r=Math.round((f-r)*t+r);g=Math.round((f-g)*t+g);b=Math.round((f-b)*t+b);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+function lum(hex){const n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255;}
+const mx=(p)=>[CXM-p[0],p[1]];             // mirror a right-half point to the left
+const rx=(p)=>[CXM+p[0],p[1]];
+
+function neckPath(c,k,view,move){          // neckline from right neck point to left neck point
+  const d=k.drop[view],a=k.A;
+  if(move)c.moveTo(CXM+a[0],a[1]);
+  c.bezierCurveTo(CXM+a[0]*.92,a[1]+(d-a[1])*.9,CXM+a[0]*.5,d,CXM,d);
+  c.bezierCurveTo(CXM-a[0]*.5,d,CXM-a[0]*.92,a[1]+(d-a[1])*.9,CXM-a[0],a[1]);
+}
+function shirtPath(c,k,view){
+  c.beginPath();
+  c.moveTo(...mx(k.A));c.lineTo(...mx(k.B));c.lineTo(...mx(k.C));c.lineTo(...mx(k.D));c.lineTo(...mx(k.E));
+  c.quadraticCurveTo(CXM-k.W[0],k.W[1],...mx(k.H));
+  c.lineTo(...rx(k.H));
+  c.quadraticCurveTo(CXM+k.W[0],k.W[1],...rx(k.E));
+  c.lineTo(...rx(k.D));c.lineTo(...rx(k.C));c.lineTo(...rx(k.B));c.lineTo(...rx(k.A));
+  neckPath(c,k,view,false);
+  c.closePath();
+}
+function drawShirt(c,g,view,col){
+  const k=CUT[g],dark=lum(col)<.35,edge=dark?'rgba(255,255,255,.18)':'rgba(0,0,0,.24)';
+  // floor shadow
+  c.save();c.fillStyle='rgba(0,0,0,.10)';c.beginPath();c.ellipse(CXM,k.hem+14,k.H[0]*.95,9,0,0,7);c.fill();c.restore();
+  // inside of the back neck, seen through the front opening
+  if(view==='front'){
+    const A0=k.A[0],A1=k.A[1],db=k.drop.back,df=k.drop.front;
+    c.save();c.beginPath();
+    c.moveTo(CXM+A0,A1);
+    c.bezierCurveTo(CXM+A0*.9,A1+(db-A1)*.9,CXM+A0*.5,db,CXM,db);
+    c.bezierCurveTo(CXM-A0*.5,db,CXM-A0*.9,A1+(db-A1)*.9,CXM-A0,A1);
+    c.bezierCurveTo(CXM-A0*.92,A1+(df-A1)*.9,CXM-A0*.5,df,CXM,df);
+    c.bezierCurveTo(CXM+A0*.5,df,CXM+A0*.92,A1+(df-A1)*.9,CXM+A0,A1);
+    c.closePath();c.fillStyle=shade(col,-.30);c.fill();c.restore();
+  }
+  // body
+  c.save();shirtPath(c,k,view);c.fillStyle=col;c.fill();c.clip();
+  // fabric lighting
+  let gr=c.createLinearGradient(CXM-k.C[0],0,CXM+k.C[0],0);
+  gr.addColorStop(0,'rgba(0,0,0,.14)');gr.addColorStop(.18,'rgba(0,0,0,.02)');gr.addColorStop(.5,'rgba(255,255,255,.07)');gr.addColorStop(.82,'rgba(0,0,0,.02)');gr.addColorStop(1,'rgba(0,0,0,.16)');
+  c.fillStyle=gr;c.fillRect(0,0,CW,CH);
+  gr=c.createLinearGradient(0,60,0,k.hem);gr.addColorStop(0,'rgba(0,0,0,.08)');gr.addColorStop(.25,'rgba(0,0,0,0)');gr.addColorStop(.85,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.10)');
+  c.fillStyle=gr;c.fillRect(0,0,CW,CH);
+  // sleeve shading + soft folds
+  c.fillStyle=dark?'rgba(255,255,255,.04)':'rgba(0,0,0,.05)';
+  [[-1],[1]].forEach(([s])=>{c.beginPath();c.moveTo(CXM+s*k.B[0],k.B[1]);c.lineTo(CXM+s*k.C[0],k.C[1]);c.lineTo(CXM+s*k.D[0],k.D[1]);c.lineTo(CXM+s*k.E[0],k.E[1]);c.closePath();c.fill();});
+  // armhole seams
+  c.strokeStyle=edge;c.lineWidth=1;c.setLineDash([]);
+  [[-1],[1]].forEach(([s])=>{c.beginPath();c.moveTo(CXM+s*k.B[0]*.97,k.B[1]+2);c.quadraticCurveTo(CXM+s*(k.E[0]+2),k.E[1]-34,CXM+s*k.E[0],k.E[1]);c.stroke();});
+  // hem stitching
+  c.setLineDash([4,3]);c.strokeStyle=dark?'rgba(255,255,255,.3)':'rgba(0,0,0,.3)';
+  c.beginPath();c.moveTo(CXM-k.H[0]+2,k.hem-13);c.lineTo(CXM+k.H[0]-2,k.hem-13);c.stroke();
+  [[-1],[1]].forEach(([s])=>{const a=[CXM+s*k.C[0],k.C[1]],b=[CXM+s*k.D[0],k.D[1]],t=.12;
+    c.beginPath();c.moveTo(a[0]+(k.E[0]*s*0-0)+(-s*3),a[1]+(b[1]-a[1])*0+6);c.lineTo(b[0]-s*2,b[1]-8);c.stroke();});
+  c.setLineDash([]);
+  c.restore();
+  // collar rib
+  c.save();c.beginPath();neckPath(c,k,view,true);
+  c.strokeStyle=shade(col,dark?.14:-.10);c.lineWidth=view==='front'?10:9;c.lineJoin='round';c.stroke();
+  c.beginPath();neckPath(c,k,view,true);c.strokeStyle=edge;c.lineWidth=.8;c.setLineDash([]);c.stroke();
+  c.beginPath();neckPath(c,k,view,true);c.translate(0,view==='front'?5.5:5);c.strokeStyle=dark?'rgba(255,255,255,.3)':'rgba(0,0,0,.28)';c.lineWidth=.8;c.setLineDash([3,2.5]);c.stroke();
+  c.restore();
+  // outline
+  c.save();shirtPath(c,k,view);c.strokeStyle=edge;c.lineWidth=1;c.stroke();c.restore();
+  // inside label on the back
+  if(view==='back'){c.save();c.fillStyle=dark?'rgba(255,255,255,.18)':'rgba(0,0,0,.10)';c.fillRect(CXM-9,k.drop.back+8,18,10);c.restore();}
+}
+function drawScene(c,W,H){
+  c.clearRect(0,0,W,H);c.save();c.scale(W/CW,H/CH);
+  const bg=c.createLinearGradient(0,0,0,CH);bg.addColorStop(0,'#f6f2ea');bg.addColorStop(1,'#ece5d9');c.fillStyle=bg;c.fillRect(0,0,CW,CH);
+  const col=getColor(S.color);
+  drawShirt(c,S.gender,S.place,col?col.hex:'#ffffff');
+  const sel=lib.find(d=>d.id===S.selId),mi=sel&&cache[sel.id];
+  if(sel&&mi&&mi.complete&&mi.naturalWidth){
+    const src=S.transp?getTransparentImg(mi,sel.id):mi;
+    const iw=src.naturalWidth||src.width,ih=src.naturalHeight||src.height;
+    const box=S.dsize*PX_PER_IN,sc=Math.min(box/iw,box/ih),dw=iw*sc,dh=ih*sc;
+    const k=CUT[S.gender];
+    c.save();c.imageSmoothingQuality='high';c.globalAlpha=.96;
+    c.drawImage(src,CXM-dw/2,k.top[S.place],dw,dh);
+    c.restore();
+  }
+  c.restore();
+}
+function render(){drawScene(cx,cv.width,cv.height);updateSummary();}
+
+// ── UI ───────────────────────────────────────────────────
+const el=id=>document.getElementById(id);
+function mkSeg(parent,items,isOn,onClick){
+  parent.innerHTML='';
+  items.forEach(it=>{const b=document.createElement('button');b.className='seg'+(isOn(it)?' on':'');b.textContent=it.label;b.disabled=!!it.disabled;b.onclick=()=>onClick(it);parent.appendChild(b);});
+}
+function buildGender(){mkSeg(el('gseg'),[{v:'men',label:'Men'},{v:'women',label:'Women'}],i=>i.v===S.gender,i=>{S.gender=i.v;fixSelection();buildAll();render();});}
+function buildColors(){
+  const c=el('sws');c.innerHTML='';
+  cfg.colors.forEach(p=>{const b=document.createElement('button');b.className='sw'+(p.id===S.color?' on':'');b.style.background=p.hex;b.title=p.name+(colorHasStock(S.gender,p.id)?'':' (not available)');
+    b.setAttribute('aria-label',p.name);b.disabled=!colorHasStock(S.gender,p.id);
+    b.onclick=()=>{S.color=p.id;fixSelection();buildAll();render();};c.appendChild(b);});
+  const col=getColor(S.color);el('cname').textContent=col?col.name:'';
+}
+function buildSizes(){
+  mkSeg(el('szseg'),SIZES[S.gender].map(s=>({v:s,label:s,disabled:!S.color||!isAvail(S.gender,S.color,s)})),i=>i.v===S.size,i=>{S.size=i.v;buildSizes();render();});
+  const n=S.color?SIZES[S.gender].filter(s=>!isAvail(S.gender,S.color,s)):[];
+  el('sznote').textContent=n.length?'Not available in this colour: '+n.join(', '):'';
+}
+function buildPlace(){mkSeg(el('pseg'),[{v:'front',label:'Front'},{v:'back',label:'Back'}],i=>i.v===S.place,i=>{S.place=i.v;buildPlace();render();});}
+function buildDsize(){mkSeg(el('dseg'),DSIZES.map(n=>({v:n,label:n+'×'+n+'"'})),i=>i.v===S.dsize,i=>{S.dsize=i.v;buildDsize();render();});}
+function buildGrid(){
+  const g=el('dgrid');g.innerHTML='';
+  if(!lib.length){g.innerHTML='<div class="empty">No designs yet.'+(APP_MODE==='seller'?' Tap “Add Design” to upload.':' Please check back soon.')+'</div>';return;}
+  lib.forEach(d=>{
+    const t=document.createElement('div');t.className='dtile'+(d.id===S.selId?' on':'');t.onclick=()=>selD(d.id);
+    const img=document.createElement('img');img.src=d.src||'';img.alt=d.label||'Design';t.appendChild(img);
+    const l=document.createElement('div');l.className='dlbl';l.textContent=d.label||'Design';t.appendChild(l);
+    if(APP_MODE==='seller'){
+      const db=document.createElement('button');db.className='delbtn';db.innerHTML='&#10005;';db.title='Delete';
+      db.onclick=e=>{e.stopPropagation();armDelete(db,()=>delD(d.id),'&#10005;');};t.appendChild(db);
+    }
+    g.appendChild(t);
+  });
+}
+function armDelete(btn,fn,idle){ // two-tap delete (works where confirm() is blocked)
+  if(btn.dataset.arm==='1'){fn();return;}
+  btn.dataset.arm='1';btn.textContent='Sure?';
+  setTimeout(()=>{btn.dataset.arm='';btn.innerHTML=idle;},2500);
+}
+function buildPrev(){
+  const e=el('sprev'),d=lib.find(x=>x.id===S.selId);
+  if(!d){e.innerHTML='<span class="esel">No design selected &#8212; pick one below</span>';return;}
+  e.innerHTML='';const im=document.createElement('img');im.src=d.src||'';e.appendChild(im);
+  const w=document.createElement('div');w.innerHTML='<div class="sname"></div><div class="shint">Printed in the centre, '+S.place+' of the t-shirt</div>';
+  w.querySelector('.sname').textContent=d.label||'Design';e.appendChild(w);
+}
+function updateSummary(){
+  const col=getColor(S.color),b=el('sumbar');b.innerHTML='';
+  const add=(t,sw)=>{const s=document.createElement('span');s.className='chip';if(sw){const i=document.createElement('i');i.style.background=sw;s.appendChild(i);}s.appendChild(document.createTextNode(t));b.appendChild(s);};
+  add(S.gender==='men'?'Men':'Women');if(col)add(col.name,col.hex);add('Size '+(S.size||'—'));add(S.dsize+'×'+S.dsize+'" '+S.place);
+}
+function selD(id){S.selId=id;buildGrid();buildPrev();render();}
+function delD(id){
+  if(S.selId===id)S.selId=null;
+  lib=lib.filter(d=>d.id!==id);deleted.add(id);dbDelete(id);saveLib();buildGrid();buildPrev();render();
+}
+function doZoom(d){S.zm=Math.min(2,Math.max(.5,parseFloat((S.zm+d).toFixed(1))));el('zlbl').textContent=Math.round(S.zm*100)+'%';cv.width=Math.round(CW*2*S.zm);cv.height=Math.round(CH*2*S.zm);render();}
+function resetAll(){
+  Object.assign(S,{gender:'men',color:'white',size:'M',dsize:10,place:'front',selId:null,zm:1,transp:true});
+  cv.width=CW*2;cv.height=CH*2;el('zlbl').textContent='100%';el('tpick').checked=true;fixSelection();buildAll();render();
+}
+function toast(m){const t=el('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+function buildAll(){buildGender();buildColors();buildSizes();buildPlace();buildDsize();buildGrid();buildPrev();buildAdmin();}
+
+function saveImg(){
+  const ec=document.createElement('canvas');ec.width=CW*2;ec.height=CH*2;drawScene(ec.getContext('2d'),ec.width,ec.height);
+  const a=document.createElement('a');a.download='tshirt-design-'+S.place+'.png';a.href=ec.toDataURL('image/png');a.click();toast('Saved!');
+}
+function shareWA(){
+  const sel=lib.find(d=>d.id===S.selId),col=getColor(S.color);
+  const msg=`T-Shirt Design Enquiry\n\nFit: ${S.gender==='men'?'Men':'Women'}\nColour: ${col?col.name:'-'}\nSize: ${S.size||'-'}\nDesign: ${sel?sel.label:'Not selected'}\nDesign size: ${S.dsize}×${S.dsize} inch\nPlacement: ${S.place==='front'?'Front':'Back'}, centre\nRound collar cotton t-shirt\n\nContact: 9840037602`;
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ── SELLER / ADMIN ───────────────────────────────────────
+function buildAdmin(){
+  if(APP_MODE!=='seller')return;
+  // colours
+  const rows=el('colrows');rows.innerHTML='';
+  cfg.colors.forEach(c=>{
+    const r=document.createElement('div');r.className='crow2';
+    const i=document.createElement('i');i.style.background=c.hex;const n=document.createElement('span');n.textContent=c.name;
+    const x=document.createElement('button');x.className='xbtn';x.textContent='Remove';x.onclick=()=>armDelete(x,()=>removeColor(c.id),'Remove');
+    r.append(i,n,x);rows.appendChild(r);
+  });
+  // availability matrix for the selected fit
+  const g=S.gender;el('mxfor').textContent='— '+(g==='men'?'Men':'Women');
+  const t=el('mx');t.innerHTML='';
+  const hr=t.insertRow();hr.insertCell().outerHTML='<th>Colour</th>';
+  SIZES[g].forEach(s=>{const th=document.createElement('th');th.textContent=s;hr.appendChild(th);});
+  hr.insertCell().outerHTML='<th></th>';
+  cfg.colors.forEach(c=>{
+    const r=t.insertRow();const c0=r.insertCell();
+    const dot=document.createElement('i');dot.style.cssText='display:inline-block;width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.25);margin-right:6px;vertical-align:-1px;background:'+c.hex;
+    c0.appendChild(dot);c0.appendChild(document.createTextNode(c.name));
+    SIZES[g].forEach(s=>{
+      const cell=r.insertCell();const cb=document.createElement('input');cb.type='checkbox';cb.checked=isAvail(g,c.id,s);cb.setAttribute('aria-label',c.name+' '+s);
+      cb.onchange=()=>setAvail(g,c.id,s,cb.checked);cell.appendChild(cb);
+    });
+    const all=r.insertCell();const b=document.createElement('button');
+    const allOn=SIZES[g].every(s=>isAvail(g,c.id,s));b.textContent=allOn?'none':'all';
+    b.onclick=()=>{SIZES[g].forEach(s=>setAvail(g,c.id,s,!allOn,true));afterCfg();};all.appendChild(b);
+  });
+}
+function setAvail(g,c,s,on,quiet){
+  const k=key(g,c,s),i=cfg.unavail.indexOf(k);
+  if(on&&i>-1)cfg.unavail.splice(i,1);if(!on&&i===-1)cfg.unavail.push(k);
+  if(!quiet)afterCfg();
+}
+function afterCfg(){saveCfg();fixSelection();buildColors();buildSizes();buildAdmin();render();}
+function addColor(){
+  const name=el('ncname').value.trim(),hex=el('ncpick').value;
+  if(!name){toast('Enter a colour name');return;}
+  if(cfg.colors.some(c=>c.name.toLowerCase()===name.toLowerCase())){toast('That colour already exists');return;}
+  cfg.colors.push({id:'k'+Date.now().toString(36),name,hex});el('ncname').value='';
+  saveCfg();buildAll();render();toast('Colour added');
+}
+function removeColor(id){
+  cfg.colors=cfg.colors.filter(c=>c.id!==id);cfg.unavail=cfg.unavail.filter(k=>k.split('|')[1]!==id);
+  saveCfg();fixSelection();buildAll();render();
+}
+const readURL=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(String(e.target.result||''));r.onerror=rej;r.readAsDataURL(f);});
+const readTxt=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(String(e.target.result||''));r.onerror=rej;r.readAsText(f);});
+function upload(ev){
+  const files=Array.from(ev.target.files||[]);
+  (async()=>{
+    for(let i=0;i<files.length;i++){
+      const f=files[i];if(!f.type.startsWith('image/'))continue;
+      const src=await optimizeDataUrl(await readURL(f));
+      lib.push({id:'ts'+Date.now().toString(36)+i.toString(36),label:f.name.replace(/\.[^.]+$/,'').slice(0,18),src});
+    }
+    saveLib();preAll();buildGrid();render();toast('Design added');
+  })();
+  ev.target.value='';
+}
+function exportData(){
+  const data={version:1,updatedAt:cfg.updatedAt||Date.now(),config:{colors:cfg.colors,unavail:cfg.unavail},designs:lib.map(d=>({id:d.id,label:d.label,src:d.src}))};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));
+  a.download='shared-tshirt-data.json';a.click();URL.revokeObjectURL(a.href);toast('Exported shared-tshirt-data.json');
+}
+function importData(ev){
+  const files=Array.from(ev.target.files||[]);if(!files.length)return;
+  (async()=>{
+    let added=0,cfgIn=false;
+    try{
+      for(const f of files){
+        if(/\.json$/i.test(f.name)||f.type==='application/json'){
+          let data;try{data=JSON.parse(await readTxt(f));}catch{continue;}
+          const list=Array.isArray(data)?data:(data&&Array.isArray(data.designs)?data.designs:[]);
+          if(data&&data.config&&Array.isArray(data.config.colors)){cfg={updatedAt:Date.now(),colors:data.config.colors,unavail:data.config.unavail||[]};saveCfg();cfgIn=true;}
+          list.forEach((d,i)=>{if(!d||!d.src||lib.find(x=>x.src===d.src))return;
+            const id=d.id&&!lib.find(x=>x.id===d.id)?d.id:('ti'+Date.now().toString(36)+i.toString(36));
+            deleted.delete(id);lib.push({id,label:d.label||('Design '+(i+1)),src:d.src});added++;});
+        }else if(f.type.startsWith('image/')){
+          const src=await optimizeDataUrl(await readURL(f));if(lib.find(x=>x.src===src))continue;
+          lib.push({id:'ti'+Date.now().toString(36)+added,label:f.name.replace(/\.[^.]+$/,'').slice(0,18),src});added++;
+        }
+      }
+      if(added)saveLib();
+      fixSelection();preAll();buildAll();render();
+      toast('Imported '+added+' design'+(added===1?'':'s')+(cfgIn?' and colour/size settings':''));
+    }catch(e){toast('Could not import files');}
+    finally{ev.target.value='';}
+  })();
+}
+function applyMode(){
+  const seller=APP_MODE==='seller';
+  ['upbtn','impbtn','expbtn'].forEach(id=>el(id).style.display=seller?'':'none');
+  el('snote').hidden=!seller;el('admin').hidden=!seller;
+  const b=el('badge'),btn=el('modeBtn');
+  b.textContent=seller?'Seller':'Buyer';b.classList.toggle('cust',!seller);
+  btn.textContent=seller?'Switch to Buyer':'Switch to Seller';
+  btn.style.color=seller?'#d4a843':'#ff8c00';btn.style.borderColor=seller?'#d4a843':'#ff8c00';
+  buildAll();
+}
+function toggleMode(){
+  const row=el('pwrow');
+  if(APP_MODE==='seller'){APP_MODE='customer';row.hidden=true;applyMode();return;}
+  row.hidden=!row.hidden;if(!row.hidden)el('pwin').focus();
+}
+function submitPw(){
+  const i=el('pwin'),m=el('pwmsg');
+  if(i.value!==SELLER_PASSWORD){m.textContent='Incorrect password.';return;}
+  i.value='';m.textContent='';el('pwrow').hidden=true;APP_MODE='seller';applyMode();
+}
+function init(){
+  fixSelection();buildAll();render();
+  loadAll();
+}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

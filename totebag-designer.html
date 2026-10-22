@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Tote Bag Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#1a9e8f;--gl:#e6f7f5;--cream:#fdf8f2;--dark:#2d2320;--mid:#6b6560;--bdr:#ece3d7;--acc:#0d7a6e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;overflow-x:hidden;}
+header{background:var(--dark);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.4);}
+header h1{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:.08em;color:var(--gl);}
+header h1 span{color:#faf7f2;}
+.badge{font-size:.62rem;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--dark);}
+.badge.cust{background:var(--acc);color:#fff;}
+.app{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 50px);}
+.preview{padding:14px;display:flex;flex-direction:column;align-items:center;background:#f4efe8;gap:10px;}
+.vtabs{display:flex;gap:4px;background:var(--dark);padding:4px;border-radius:30px;}
+.vtab{padding:6px 18px;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;border-radius:20px;cursor:pointer;transition:all .2s;}
+.vtab.on{background:var(--gold);color:var(--dark);}
+.cw{border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1);background:#f4efe8;width:100%;max-width:460px;}
+#cv{display:block;width:100%;height:auto;}
+.zbar{display:flex;align-items:center;gap:8px;}
+.zbtn{width:30px;height:30px;border:1.5px solid var(--bdr);background:#fff;border-radius:50%;font-size:.95rem;cursor:pointer;color:var(--dark);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.zbtn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+.zlbl{font-size:.76rem;color:var(--mid);min-width:36px;text-align:center;}
+.actbar{display:flex;gap:7px;width:100%;max-width:460px;}
+.abtn{flex:1;padding:11px 4px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;}
+.asave{background:var(--dark);color:var(--gl);}.ashare{background:#25D366;color:#fff;}.areset{background:#fff;color:var(--mid);border:1.5px solid var(--bdr);}
+.ctrl{background:#fff;border-left:1px solid var(--bdr);overflow-y:auto;display:flex;flex-direction:column;max-height:calc(100vh - 50px);}
+.sec{padding:13px 15px;border-bottom:1px solid var(--bdr);}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.stitle::before{content:'';display:inline-block;width:3px;height:12px;background:var(--gold);border-radius:2px;}
+.swatches{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.sw{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;box-shadow:0 2px 5px rgba(0,0,0,.15);}
+.sw.on{border-color:var(--gold);transform:scale(1.18);}
+.crow{display:flex;align-items:center;gap:10px;padding-top:9px;border-top:1px solid var(--bdr);}
+.crow label{font-size:.73rem;color:var(--mid);white-space:nowrap;font-weight:500;}
+.crow input[type=color]{width:34px;height:34px;border:2px solid var(--bdr);background:#fff;cursor:pointer;border-radius:7px;padding:2px;}
+.crow .cname{font-size:.78rem;color:var(--dark);font-weight:500;}
+.szbts{display:flex;gap:7px;}
+.szb{flex:1;padding:8px 2px;border:1.5px solid var(--bdr);background:#fff;border-radius:8px;font-size:.75rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;text-align:center;color:var(--dark);}
+.szb.on{background:var(--dark);color:var(--gl);border-color:var(--dark);}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+.pb{padding:7px 3px;border:1.5px solid var(--bdr);background:#fff;border-radius:7px;font-size:.68rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;text-align:center;color:var(--mid);line-height:1.3;}
+.pb.on{background:var(--acc);color:#fff;border-color:var(--acc);}
+.opt{display:flex;align-items:center;gap:7px;font-size:.73rem;color:var(--mid);margin-top:10px;cursor:pointer;}
+.lhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.upbtn{background:var(--gold);color:var(--dark);border:none;padding:6px 11px;border-radius:6px;font-size:.72rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+#fi,#ifi{display:none;}
+.dgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:260px;overflow-y:auto;}
+.dtile{position:relative;border:2px solid var(--bdr);border-radius:8px;cursor:pointer;min-height:96px;overflow:hidden;background:#faf8f5;transition:all .15s;display:flex;flex-direction:column;justify-content:center;}
+.dtile:hover{border-color:var(--gold);}.dtile.on{border-color:var(--acc);box-shadow:0 0 0 2px rgba(13,122,110,.25);}
+.dtile img{width:100%;height:72px;object-fit:contain;padding:4px 6px;background:#fff;}
+.delbtn{position:absolute;top:2px;right:2px;width:18px;height:18px;background:rgba(170,20,20,.85);color:#fff;border:none;border-radius:50%;font-size:.63rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.dlbl{background:#fff;color:var(--mid);font-size:.64rem;padding:3px 5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid var(--bdr);}
+.sprev{background:var(--cream);border-radius:8px;padding:8px 10px;margin-bottom:10px;display:flex;align-items:center;gap:8px;border:1px solid var(--bdr);min-height:48px;}
+.sprev img{width:52px;height:52px;object-fit:contain;border-radius:4px;background:#fff;}
+.sname{font-size:.77rem;font-weight:500;}.shint{font-size:.67rem;color:var(--mid);margin-top:1px;}
+.esel{font-size:.72rem;color:var(--mid);font-style:italic;}
+.seller-note{display:none;font-size:.66rem;color:var(--mid);background:var(--gl);border:1px solid #9ed8d2;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.45;}
+.empty{grid-column:1/-1;font-size:.74rem;color:var(--mid);font-style:italic;padding:14px 4px;text-align:center;}
+.spec{width:100%;max-width:460px;background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;margin-top:4px;}
+.spec h2{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin-bottom:8px;}
+.spec ul{list-style:none;}
+.spec li{position:relative;padding-left:16px;font-size:.78rem;line-height:1.5;color:var(--dark);margin-bottom:6px;}
+.spec li::before{content:'';position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--dark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;transition:transform .3s;z-index:999;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+@media(max-width:680px){.app{grid-template-columns:1fr;}.ctrl{max-height:none;border-left:none;border-top:1px solid var(--bdr);}.preview{padding:10px;}.dgrid{max-height:155px;}}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>Tote Bag</span> Designer</h1>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button onclick="toggleMode()" id="modeBtn" style="background:rgba(255,255,255,0.15);color:#ff8c00;border:1px solid #ff8c00;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:500;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;font-family:'DM Sans',sans-serif;">Switch to Seller</button>
+    <span class="badge cust" id="badge">Buyer</span>
+  </div>
+</header>
+<div class="app">
+  <div class="preview">
+    <div class="cw"><canvas id="cv"></canvas></div>
+    <div class="zbar">
+      <button class="zbtn" onclick="doZoom(-0.1)">&#8722;</button>
+      <span class="zlbl" id="zlbl">100%</span>
+      <button class="zbtn" onclick="doZoom(0.1)">+</button>
+    </div>
+    <div class="actbar">
+      <button class="abtn asave" onclick="saveImg()">&#128190; Save PNG</button>
+      <button class="abtn ashare" onclick="shareWA()">&#128242; WhatsApp</button>
+      <button class="abtn areset" onclick="resetAll()">&#10005; Reset</button>
+    </div>
+    <div class="spec">
+      <h2>Product Specifications</h2>
+      <ul>
+        <li><b>Cotton Tote bag</b> &ndash; 16 x 14 inches, long, comfortable shoulder handle &ndash; 12 inches</li>
+        <li>Box-handle stitching for enhanced load support and added strength. Strong enough to carry up to 10 kg.</li>
+        <li>Interlocking stitch on all three inner sides for extra durability</li>
+        <li>One side printed, one side blank &ndash; ideal for DIY painting and creative artwork</li>
+        <li>Wash with cold water and mild detergent. Natural cotton fiber may have 5&ndash;10% shrinkage.</li>
+        <li>Ideal shopping bag for homemakers. A stylish and practical college bag for girls. Matches any outfit &ndash; traditional or modern. A thoughtful gift for friends and family &mdash; a meaningful eco-friendly alternative to blouse pieces, plasticware, and other common gift items</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ctrl">
+    <div class="sec"><div class="stitle">Print Size <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.7rem;">(centre of bag, one side)</span></div><div class="szbts" id="szbts"></div>
+      <label class="opt"><input type="checkbox" id="tpick" checked onchange="S.transp=this.checked;render()"> Remove white background from design</label>
+    </div>
+    <div class="sec" style="flex:1">
+      <div class="lhdr"><div class="stitle" style="margin-bottom:0">Design Library</div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;"><button class="upbtn" id="upbtn" onclick="document.getElementById('fi').click()" style="display:none">&#65291; Add Design</button><button class="upbtn" id="impbtn" onclick="document.getElementById('ifi').click()" style="display:none;background:#0f8f80;color:#fff;">Import</button><button class="upbtn" id="expbtn" onclick="exportDesigns()" style="display:none;background:#0d7a6e;color:#fff;">Export</button></div><input type="file" id="fi" accept="image/*" multiple onchange="upload(event)"><input type="file" id="ifi" accept="application/json,.json,image/*" multiple onchange="importDesigns(event)"></div>
+      <div class="seller-note" id="snote"><b>Seller:</b> use <b>Add Design</b> to upload images. To show them to all buyers, tap <b>Export</b> and upload the downloaded <b>shared-totebag-designs.json</b> to the website (replace the old one).</div>
+      <div class="sprev" id="sprev"><span class="esel">No design selected &#8212; pick one below</span></div>
+      <div class="dgrid" id="dgrid"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// ── CONFIG ───────────────────────────────────────────────
+const SELLER_PASSWORD='blouse2024';          // change here to set a different seller password
+const WA_NUMBER='919840037602';
+const PUBLISHED_FILE='/shared-totebag-designs.json';
+const DB_NAME='totebagDesigner', META_KEY='tb1_meta';
+
+let APP_MODE='customer';
+const S={size:11,selId:null,zm:1,transp:true};
+const SIZES=[11,12];
+
+// ── PERSISTENCE: IndexedDB for image data, localStorage for metadata ──
+let idb=null;
+function openDB(){return new Promise((res,rej)=>{if(idb){res(idb);return;}const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=e=>{e.target.result.createObjectStore('designs',{keyPath:'id'});};r.onsuccess=e=>{idb=e.target.result;res(idb);};r.onerror=rej;});}
+function dbOp(mode,fn,fallback){return openDB().then(db=>new Promise((res,rej)=>{const tx=db.transaction('designs',mode);const rq=fn(tx.objectStore('designs'));tx.oncomplete=()=>res(rq&&rq.result!==undefined?rq.result:undefined);tx.onerror=rej;})).catch(()=>fallback);}
+const dbPut=d=>dbOp('readwrite',s=>s.put(d));
+const dbDelete=id=>dbOp('readwrite',s=>s.delete(id));
+const dbGetAll=()=>dbOp('readonly',s=>s.getAll(),[]).then(r=>r||[]);
+
+let lib=[];
+let deleted=new Set(); // ids removed by the seller (so published designs stay removed on this device)
+function saveLib(){
+  try{localStorage.setItem(META_KEY,JSON.stringify({ids:lib.map(d=>({id:d.id,label:d.label})),deleted:[...deleted]}));}catch(e){}
+  lib.forEach(d=>dbPut(d));
+}
+async function loadCustomDesigns(){
+  try{const m=JSON.parse(localStorage.getItem(META_KEY)||'{}');(m.deleted||[]).forEach(x=>deleted.add(x));}catch(e){}
+  const customs=await dbGetAll();
+  customs.forEach(d=>{if(d&&d.src&&!lib.find(x=>x.id===d.id)&&!deleted.has(d.id))lib.push(d);});
+  if(customs.length){preAll();buildGrid();buildPrev();render();}
+}
+async function loadPublishedDesigns(){
+  try{
+    const r=await fetch(PUBLISHED_FILE+'?t='+Date.now(),{cache:'no-store'});
+    if(!r.ok)return;
+    const list=await r.json();
+    if(!Array.isArray(list))return;
+    let changed=false;
+    list.forEach((d,i)=>{
+      if(!d||!d.src)return;
+      const id=d.id||('pub'+i);
+      if(deleted.has(id)||lib.find(x=>x.id===id||x.src===d.src))return;
+      lib.push({id,label:d.label||('Design '+(i+1)),src:d.src});changed=true;
+    });
+    if(changed){preAll();buildGrid();buildPrev();render();}
+  }catch(e){}
+}
+
+// ── IMAGE HELPERS ────────────────────────────────────────
+const cache={},cacheSrc={},tCache={};
+function preOne(d){
+  if(!d||!d.src)return;
+  if(cache[d.id]&&cacheSrc[d.id]===d.src)return;
+  const i=new Image();i.onload=render;i.src=d.src;cache[d.id]=i;cacheSrc[d.id]=d.src;
+  delete tCache[d.id];
+}
+function preAll(){lib.forEach(preOne);}
+
+// Remove edge-connected white background (internal whites are preserved)
+function getTransparentImg(img,id){
+  if(tCache[id])return tCache[id];
+  const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+  const oc=document.createElement('canvas');oc.width=w;oc.height=h;
+  const ox=oc.getContext('2d');ox.drawImage(img,0,0);
+  try{
+    const im=ox.getImageData(0,0,w,h),d=im.data,seen=new Uint8Array(w*h),q=[];let qi=0;
+    const isBg=(x,y)=>{const i=(y*w+x)<<2;if(d[i+3]<8)return true;const r=d[i],g=d[i+1],b=d[i+2];return (r+g+b)/3>210&&(Math.max(r,g,b)-Math.min(r,g,b))<28;};
+    const push=(x,y)=>{const k=y*w+x;if(seen[k])return;seen[k]=1;q.push(k);};
+    for(let x=0;x<w;x++){if(isBg(x,0))push(x,0);if(isBg(x,h-1))push(x,h-1);}
+    for(let y=0;y<h;y++){if(isBg(0,y))push(0,y);if(isBg(w-1,y))push(w-1,y);}
+    while(qi<q.length){const k=q[qi++],x=k%w,y=(k/w)|0;
+      if(x>0&&!seen[k-1]&&isBg(x-1,y))push(x-1,y);
+      if(x<w-1&&!seen[k+1]&&isBg(x+1,y))push(x+1,y);
+      if(y>0&&!seen[k-w]&&isBg(x,y-1))push(x,y-1);
+      if(y<h-1&&!seen[k+w]&&isBg(x,y+1))push(x,y+1);}
+    for(let k=0;k<w*h;k++)if(seen[k])d[(k<<2)+3]=0;
+    for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const k=y*w+x;if(seen[k])continue;const i=k<<2;
+      const r=d[i],g=d[i+1],b=d[i+2];if((r+g+b)/3<190||(Math.max(r,g,b)-Math.min(r,g,b))>38)continue;
+      if(seen[k-1]||seen[k+1]||seen[k-w]||seen[k+w])d[i+3]=Math.round(d[i+3]*.35);}
+    ox.putImageData(im,0,0);
+  }catch(e){}
+  tCache[id]=oc;return oc;
+}
+function optimizeDataUrl(src,maxSide=900,quality=.85){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+      if(!w||!h){resolve(src);return;}
+      const sc=Math.min(1,maxSide/Math.max(w,h));
+      const c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*sc));c.height=Math.max(1,Math.round(h*sc));
+      const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(img,0,0,c.width,c.height);
+      let out='';try{out=c.toDataURL('image/webp',quality);}catch(e){}
+      if(!out||out.length<32||!out.startsWith('data:image/webp')){try{out=c.toDataURL('image/jpeg',quality);}catch(e){}}
+      resolve(out||src);
+    };
+    img.onerror=()=>resolve(src);img.src=src;
+  });
+}
+
+// ── DRAW: plain natural bag photo + design centred on the body ─────
+// Image is 824 x 1240 (2x of 412 x 620). Bag body is ~289px wide (14in) in the 412px frame => ~20.6px/in.
+const CW=412,CH=620,PHOTO_SCALE=2;
+const BAG={cx:178,cy:448,pxPerIn:20.6};   // centre of the printable area on the bag body
+const bagImg=new Image();bagImg.onload=render;bagImg.src='/totebag-straight.jpg';
+bagImg.onerror=()=>{bagImg.onerror=null;bagImg.src='totebag-straight.jpg';};
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+cv.width=CW*PHOTO_SCALE;cv.height=CH*PHOTO_SCALE;
+
+function drawScene(c,W,H){
+  c.clearRect(0,0,W,H);
+  if(bagImg.complete&&bagImg.naturalWidth)c.drawImage(bagImg,0,0,W,H);
+  else{c.fillStyle='#e9dfc9';c.fillRect(0,0,W,H);c.fillStyle='#9a8878';c.font='16px sans-serif';c.textAlign='center';c.fillText('Loading\u2026',W/2,H/2);return;}
+  const sel=lib.find(d=>d.id===S.selId);
+  if(!sel)return;
+  const mi=cache[sel.id];
+  if(!(mi&&mi.complete&&mi.naturalWidth))return;
+  const src=S.transp?getTransparentImg(mi,sel.id):mi;
+  const iw=src.naturalWidth||src.width,ih=src.naturalHeight||src.height;
+  const k=W/CW,box=S.size*BAG.pxPerIn*k;
+  const sc=Math.min(box/iw,box/ih),dw=iw*sc,dh=ih*sc;
+  c.save();
+  c.imageSmoothingQuality='high';
+  c.globalCompositeOperation='multiply';   // lets the cotton weave and folds show through the print
+  c.globalAlpha=.97;
+  c.drawImage(src,BAG.cx*k-dw/2,BAG.cy*k-dh/2,dw,dh);
+  c.restore();
+}
+function render(){drawScene(cx,cv.width,cv.height);}
+
+// ── UI ───────────────────────────────────────────────────
+function buildSizes(){
+  const c=document.getElementById('szbts');c.innerHTML='';
+  SIZES.forEach(n=>{const b=document.createElement('button');b.className='szb'+(n===S.size?' on':'');b.innerHTML=n+'&#215;'+n+'"';b.onclick=()=>{S.size=n;buildSizes();render();};c.appendChild(b);});
+}
+function buildGrid(){
+  const g=document.getElementById('dgrid');g.innerHTML='';
+  if(!lib.length){g.innerHTML='<div class="empty">No designs yet.'+(APP_MODE==='seller'?' Tap “Add Design” to upload.':' Please check back soon.')+'</div>';return;}
+  lib.forEach(d=>{
+    const t=document.createElement('div');t.className='dtile'+(d.id===S.selId?' on':'');t.onclick=()=>selD(d.id);
+    const img=document.createElement('img');img.src=d.src||'';img.alt=d.label||'Design';t.appendChild(img);
+    const l=document.createElement('div');l.className='dlbl';l.textContent=d.label||'Design';t.appendChild(l);
+    if(APP_MODE==='seller'){
+      const db=document.createElement('button');db.className='delbtn';db.innerHTML='&#10005;';db.title='Delete';
+      db.onclick=e=>{e.stopPropagation();if(confirm('Delete this design?'))delD(d.id);};t.appendChild(db);
+    }
+    g.appendChild(t);
+  });
+}
+function buildPrev(){
+  const el=document.getElementById('sprev'),d=lib.find(x=>x.id===S.selId);
+  if(!d){el.innerHTML='<span class="esel">No design selected &#8212; pick one below</span>';return;}
+  el.innerHTML='';const im=document.createElement('img');im.src=d.src||'';el.appendChild(im);
+  const w=document.createElement('div');w.innerHTML='<div class="sname"></div><div class="shint">Shown in the centre of the bag</div>';
+  w.querySelector('.sname').textContent=d.label||'Design';el.appendChild(w);
+}
+function selD(id){S.selId=id;buildGrid();buildPrev();render();}
+function delD(id){
+  if(S.selId===id){S.selId=null;}
+  lib=lib.filter(d=>d.id!==id);deleted.add(id);dbDelete(id);saveLib();
+  buildGrid();buildPrev();render();
+}
+function doZoom(d){S.zm=Math.min(2,Math.max(.5,parseFloat((S.zm+d).toFixed(1))));document.getElementById('zlbl').textContent=Math.round(S.zm*100)+'%';cv.width=Math.round(CW*PHOTO_SCALE*S.zm);cv.height=Math.round(CH*PHOTO_SCALE*S.zm);render();}
+function resetAll(){
+  S.selId=null;S.size=11;S.zm=1;S.transp=true;
+  cv.width=CW*PHOTO_SCALE;cv.height=CH*PHOTO_SCALE;document.getElementById('zlbl').textContent='100%';document.getElementById('tpick').checked=true;
+  buildSizes();buildGrid();buildPrev();render();
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+function saveImg(){
+  const ec=document.createElement('canvas');ec.width=CW*PHOTO_SCALE;ec.height=CH*PHOTO_SCALE;
+  drawScene(ec.getContext('2d'),ec.width,ec.height);
+  const a=document.createElement('a');a.download='totebag-design.png';a.href=ec.toDataURL('image/png');a.click();toast('Saved!');
+}
+function shareWA(){
+  const sel=lib.find(d=>d.id===S.selId),nm=sel?sel.label:'Not selected';
+  const msg=`Tote Bag Design Enquiry\n\nDesign: ${nm}\nBag: Natural cotton, 16 x 14 inch\nPrint size: ${S.size}\u00d7${S.size} inch, centre, one side\n\nContact: 9840037602`;
+  const url=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+  if(navigator.share)navigator.share({title:'Tote Bag Design',text:msg}).catch(()=>window.open(url,'_blank'));
+  else window.open(url,'_blank');
+}
+
+// ── SELLER / ADMIN ───────────────────────────────────────
+const readURL=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(String(e.target.result||''));r.onerror=rej;r.readAsDataURL(f);});
+const readTxt=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(String(e.target.result||''));r.onerror=rej;r.readAsText(f);});
+function upload(ev){
+  const files=Array.from(ev.target.files||[]);
+  (async()=>{
+    for(let i=0;i<files.length;i++){
+      const f=files[i];if(!f.type.startsWith('image/'))continue;
+      const src=await optimizeDataUrl(await readURL(f));
+      const d={id:'tc'+Date.now().toString(36)+i.toString(36),label:f.name.replace(/\.[^.]+$/,'').slice(0,18),src};
+      lib.push(d);
+    }
+    saveLib();preAll();buildGrid();render();toast('Design added');
+  })();
+  ev.target.value='';
+}
+function exportDesigns(){
+  (async()=>{
+    if(!lib.length){toast('No designs to export');return;}
+    const data=lib.map(d=>({id:d.id,label:d.label,src:d.src}));
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));
+    a.download='shared-totebag-designs.json';a.click();URL.revokeObjectURL(a.href);
+    toast('Exported shared-totebag-designs.json');
+  })();
+}
+function importDesigns(ev){
+  const files=Array.from(ev.target.files||[]);if(!files.length)return;
+  (async()=>{
+    let added=0;
+    try{
+      for(const f of files){
+        if(/\.json$/i.test(f.name)||f.type==='application/json'){
+          let list=[];try{list=JSON.parse(await readTxt(f));}catch{continue;}
+          if(!Array.isArray(list))continue;
+          list.forEach((d,i)=>{if(!d||!d.src||lib.find(x=>x.src===d.src))return;
+            const id=d.id&&!lib.find(x=>x.id===d.id)?d.id:('ti'+Date.now().toString(36)+i.toString(36));
+            deleted.delete(id);lib.push({id,label:d.label||('Design '+(i+1)),src:d.src});added++;});
+        }else if(f.type.startsWith('image/')){
+          const src=await optimizeDataUrl(await readURL(f));if(lib.find(x=>x.src===src))continue;
+          lib.push({id:'ti'+Date.now().toString(36)+added,label:f.name.replace(/\.[^.]+$/,'').slice(0,18),src});added++;
+        }
+      }
+      if(added){saveLib();preAll();buildGrid();render();}
+      toast('Imported '+added+' design'+(added===1?'':'s'));
+    }catch(e){toast('Could not import files');}
+    finally{ev.target.value='';}
+  })();
+}
+function applyMode(){
+  const seller=APP_MODE==='seller';
+  ['upbtn','impbtn','expbtn'].forEach(id=>document.getElementById(id).style.display=seller?'':'none');
+  document.getElementById('snote').style.display=seller?'block':'none';
+  const b=document.getElementById('badge'),btn=document.getElementById('modeBtn');
+  b.textContent=seller?'Seller':'Buyer';b.classList.toggle('cust',!seller);
+  btn.textContent=seller?'Switch to Buyer':'Switch to Seller';
+  btn.style.color=seller?'#d4a843':'#ff8c00';btn.style.borderColor=seller?'#d4a843':'#ff8c00';
+  buildGrid();
+}
+function toggleMode(){
+  if(APP_MODE==='customer'){
+    const pwd=prompt('Enter Seller Password:');
+    if(pwd===null)return;
+    if(pwd!==SELLER_PASSWORD){alert('Incorrect password.');return;}
+    APP_MODE='seller';
+  }else APP_MODE='customer';
+  applyMode();
+}
+
+function init(){
+  buildSizes();buildGrid();buildPrev();render();
+  loadCustomDesigns().then(loadPublishedDesigns);
+}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
