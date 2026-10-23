@@ -66,6 +66,10 @@ header h1 span{color:#faf7f2;}
 .spec ul{list-style:none;}
 .spec li{position:relative;padding-left:16px;font-size:.78rem;line-height:1.5;color:var(--dark);margin-bottom:6px;}
 .spec li::before{content:'';position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.pwrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--bdr);padding:8px 18px;font-size:.78rem;}
+.pwrow[hidden]{display:none;}
+.pwrow input{padding:6px 9px;border:1.5px solid var(--bdr);border-radius:6px;font-family:inherit;min-width:0;}
+#pwmsg{color:#b3261e;}
 .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--dark);color:#fff;padding:8px 18px;border-radius:20px;font-size:.78rem;transition:transform .3s;z-index:999;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 @media(max-width:680px){.app{grid-template-columns:1fr;}.ctrl{max-height:none;border-left:none;border-top:1px solid var(--bdr);}.preview{padding:10px;}.dgrid{max-height:155px;}}
@@ -79,6 +83,7 @@ header h1 span{color:#faf7f2;}
     <span class="badge cust" id="badge">Buyer</span>
   </div>
 </header>
+<div id="pwrow" class="pwrow" hidden><label for="pwin">Seller password</label><input id="pwin" type="password" autocomplete="off" onkeydown="if(event.key==='Enter')submitPw()"><button class="upbtn" onclick="submitPw()">Enter</button><span id="pwmsg"></span></div>
 <div class="app">
   <div class="preview">
     <div class="cw"><canvas id="cv"></canvas></div>
@@ -109,7 +114,7 @@ header h1 span{color:#faf7f2;}
       <label class="opt"><input type="checkbox" id="tpick" checked onchange="S.transp=this.checked;render()"> Remove white background from design</label>
     </div>
     <div class="sec" style="flex:1">
-      <div class="lhdr"><div class="stitle" style="margin-bottom:0">Design Library</div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;"><button class="upbtn" id="upbtn" onclick="document.getElementById('fi').click()" style="display:none">&#65291; Add Design</button><button class="upbtn" id="impbtn" onclick="document.getElementById('ifi').click()" style="display:none;background:#0f8f80;color:#fff;">Import</button><button class="upbtn" id="expbtn" onclick="exportDesigns()" style="display:none;background:#0d7a6e;color:#fff;">Export</button></div><input type="file" id="fi" accept="image/*" multiple onchange="upload(event)"><input type="file" id="ifi" accept="application/json,.json,image/*" multiple onchange="importDesigns(event)"></div>
+      <div class="lhdr"><div class="stitle" style="margin-bottom:0">Design Library</div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;"><button class="upbtn" id="upbtn" onclick="document.getElementById('fi').click()" style="display:none">&#65291; Add Design</button><button class="upbtn" id="impbtn" onclick="document.getElementById('ifi').click()" style="display:none;background:#0f8f80;color:#fff;">Import</button><button class="upbtn" id="migbtn" onclick="srvMigrate()" style="display:none;background:#b8860b;color:#fff;">Move designs online</button><button class="upbtn" id="expbtn" onclick="exportDesigns()" style="display:none;background:#0d7a6e;color:#fff;">Export</button></div><input type="file" id="fi" accept="image/*" multiple onchange="upload(event)"><input type="file" id="ifi" accept="application/json,.json,image/*" multiple onchange="importDesigns(event)"></div>
       <div class="seller-note" id="snote"><b>Seller:</b> use <b>Add Design</b> to upload images. To show them to all buyers, tap <b>Export</b> and upload the downloaded <b>shared-totebag-designs.json</b> to the website (replace the old one).</div>
       <div class="sprev" id="sprev"><span class="esel">No design selected &#8212; pick one below</span></div>
       <div class="dgrid" id="dgrid"></div>
@@ -117,6 +122,7 @@ header h1 span{color:#faf7f2;}
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="/admin-api.js"></script>
 <script>
 // ── CONFIG ───────────────────────────────────────────────
 const SELLER_PASSWORD='blouse2024';          // change here to set a different seller password
@@ -138,7 +144,103 @@ const dbGetAll=()=>dbOp('readonly',s=>s.getAll(),[]).then(r=>r||[]);
 
 let lib=[];
 let deleted=new Set(); // ids removed by the seller (so published designs stay removed on this device)
+
+// ── SERVER MODE: designs are stored online (Vercel Blob) through /api ─────
+const PRODUCT='tote';
+const SRV_EXTRA={};
+let SERVER=false,SERVER_EXISTS=false,SRV_BUSY=false;
+function srvMap(d){return Object.assign({id:d.id,label:d.label,src:d.src},SRV_EXTRA);}
+const srvPending=()=>lib.filter(d=>d.src&&d.src.startsWith('data:'));
+function srvLeave(){PPAdmin.logout();if(APP_MODE==='seller')toggleMode();}
+function armDelete(btn,fn,idle){ // two-tap delete (confirm() is blocked in some viewers)
+  if(btn.dataset.arm==='1'){fn();return;}
+  btn.dataset.arm='1';btn.textContent='Sure?';
+  setTimeout(()=>{btn.dataset.arm='';btn.innerHTML=idle;},2500);
+}
+function refreshAdminUi(){
+  const seller=APP_MODE==='seller',g=id=>document.getElementById(id);
+  const mig=g('migbtn'),n=srvPending().length;
+  if(mig){mig.style.display=(SERVER&&seller&&n)?'':'none';mig.textContent='Move '+n+' existing design'+(n===1?'':'s')+' online';}
+  if(SERVER&&g('expbtn'))g('expbtn').style.display='none';
+  const note=g('snote');
+  if(note&&SERVER)note.innerHTML=n
+    ?'<b>Seller:</b> this site now stores designs online. Tap <b>Move '+n+' existing design'+(n===1?'':'s')+' online</b> once. After that, anything you add or delete goes live for all buyers straight away.'
+    :'<b>Seller:</b> designs you add or delete here go live for all buyers straight away. You can pick several pictures at once.';
+}
+async function srvUpload(entries){
+  if(SRV_BUSY)return 0;
+  if(srvPending().length){toast('First tap “Move existing designs online”.');return 0;}
+  SRV_BUSY=true;let n=0;
+  try{
+    for(let i=0;i<entries.length;i++){
+      toast('Uploading '+(i+1)+' of '+entries.length+'…');
+      const d=await PPAdmin.addDesign(PRODUCT,entries[i].label,entries[i].dataUrl);
+      const nd=srvMap(d);lib.push(nd);SERVER_EXISTS=true;preOne(nd);n++;buildGrid();
+    }
+  }catch(err){toast(err.message||'Upload failed');if(err.status===401)srvLeave();}
+  finally{SRV_BUSY=false;}
+  if(n)toast(n+' design'+(n>1?'s':'')+' added — live for buyers now');
+  refreshAdminUi();return n;
+}
+async function srvDelete(id){
+  try{await PPAdmin.deleteDesign(PRODUCT,id);}catch(err){toast(err.message||'Delete failed');if(err.status===401)srvLeave();return;}
+  if(S.selId===id){S.selId=null;}
+  lib=lib.filter(d=>d.id!==id);buildGrid();buildPrev();render();toast('Design deleted');
+}
+async function srvMigrate(){
+  if(SRV_BUSY)return;
+  const items=srvPending(),done=[];
+  SRV_BUSY=true;
+  try{
+    
+    for(let i=0;i<items.length;i++){
+      toast('Moving design '+(i+1)+' of '+items.length+'… keep this page open');
+      const d=await PPAdmin.addDesign(PRODUCT,items[i].label,items[i].src);done.push(srvMap(d));
+    }
+    lib=done;SERVER_EXISTS=true;S.selId=null;preAll();buildGrid();buildPrev();render();
+    toast('Done. '+done.length+' designs are now stored online.');
+  }catch(err){
+    toast((err.message||'Could not move designs')+' — moved '+done.length+' of '+items.length+'. Tap the button again to continue.');
+    lib=done.concat(items.slice(done.length));SERVER_EXISTS=done.length>0;preAll();buildGrid();buildPrev();render();
+    if(err.status===401)srvLeave();
+  }finally{SRV_BUSY=false;refreshAdminUi();}
+}
+async function srvUploadFiles(ev){
+  const files=Array.from(ev.target.files||[]).filter(f=>f.type.startsWith('image/'));ev.target.value='';
+  if(!files.length)return;
+  const entries=[];
+  for(const f of files)entries.push({label:f.name.replace(/\.[^.]+$/,'').slice(0,40),dataUrl:await optimizeDataUrl(await readURL(f))});
+  await srvUpload(entries);
+}
+async function srvImportFiles(ev){
+  const files=Array.from(ev.target.files||[]);ev.target.value='';
+  const entries=[];
+  for(const f of files){
+    if(/\.json$/i.test(f.name)||f.type==='application/json'){
+      let data;try{data=JSON.parse(await readTxt(f));}catch(e){continue;}
+      if(typeof srvImportConfig==='function')srvImportConfig(data);
+      const list=Array.isArray(data)?data:(data&&Array.isArray(data.designs)?data.designs:[]);
+      list.forEach((d,i)=>{if(d&&typeof d.src==='string'&&d.src.startsWith('data:image/'))entries.push({label:d.label||('Design '+(i+1)),dataUrl:d.src});});
+    }else if(f.type.startsWith('image/')){
+      entries.push({label:f.name.replace(/\.[^.]+$/,'').slice(0,40),dataUrl:await optimizeDataUrl(await readURL(f))});
+    }
+  }
+  if(!entries.length){toast('Nothing to import');return;}
+  await srvUpload(entries);
+}
+// Load from the server when it is available; otherwise return false so the page uses its old static files.
+async function srvStart(applyConfig){
+  const r=await PPAdmin.load(PRODUCT);
+  if(!r)return false;
+  SERVER=true;SERVER_EXISTS=!!r.exists;
+  if(!r.exists)return false;
+  if(applyConfig)applyConfig(r);
+  lib=r.designs.map(srvMap);
+  return true;
+}
+// ──────────────────────────────────────────────────────────────────────────
 function saveLib(){
+  if(SERVER)return;
   try{localStorage.setItem(META_KEY,JSON.stringify({ids:lib.map(d=>({id:d.id,label:d.label})),deleted:[...deleted]}));}catch(e){}
   lib.forEach(d=>dbPut(d));
 }
@@ -170,7 +272,10 @@ const cache={},cacheSrc={},tCache={};
 function preOne(d){
   if(!d||!d.src)return;
   if(cache[d.id]&&cacheSrc[d.id]===d.src)return;
-  const i=new Image();i.onload=render;i.src=d.src;cache[d.id]=i;cacheSrc[d.id]=d.src;
+  const i=new Image();const online=/^https?:/.test(d.src);if(online)i.crossOrigin='anonymous';
+  i.onload=render;
+  i.onerror=()=>{if(online&&i.crossOrigin){const j=new Image();j.onload=render;j.src=d.src;cache[d.id]=j;}};
+  i.src=d.src;cache[d.id]=i;cacheSrc[d.id]=d.src;
   delete tCache[d.id];
 }
 function preAll(){lib.forEach(preOne);}
@@ -261,7 +366,7 @@ function buildGrid(){
     const l=document.createElement('div');l.className='dlbl';l.textContent=d.label||'Design';t.appendChild(l);
     if(APP_MODE==='seller'){
       const db=document.createElement('button');db.className='delbtn';db.innerHTML='&#10005;';db.title='Delete';
-      db.onclick=e=>{e.stopPropagation();if(confirm('Delete this design?'))delD(d.id);};t.appendChild(db);
+      db.onclick=e=>{e.stopPropagation();armDelete(db,()=>delD(d.id),'&#10005;');};t.appendChild(db);
     }
     g.appendChild(t);
   });
@@ -275,6 +380,7 @@ function buildPrev(){
 }
 function selD(id){S.selId=id;buildGrid();buildPrev();render();}
 function delD(id){
+  if(SERVER){srvDelete(id);return;}
   if(S.selId===id){S.selId=null;}
   lib=lib.filter(d=>d.id!==id);deleted.add(id);dbDelete(id);saveLib();
   buildGrid();buildPrev();render();
@@ -290,7 +396,8 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 function saveImg(){
   const ec=document.createElement('canvas');ec.width=CW*PHOTO_SCALE;ec.height=CH*PHOTO_SCALE;
   drawScene(ec.getContext('2d'),ec.width,ec.height);
-  const a=document.createElement('a');a.download='totebag-design.png';a.href=ec.toDataURL('image/png');a.click();toast('Saved!');
+  let url;try{url=ec.toDataURL('image/png');}catch(e){toast('Could not save this image. Take a screenshot instead.');return;}
+  const a=document.createElement('a');a.download='totebag-design.png';a.href=url;a.click();toast('Saved!');
 }
 function shareWA(){
   const sel=lib.find(d=>d.id===S.selId),nm=sel?sel.label:'Not selected';
@@ -304,6 +411,7 @@ function shareWA(){
 const readURL=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(String(e.target.result||''));r.onerror=rej;r.readAsDataURL(f);});
 const readTxt=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(String(e.target.result||''));r.onerror=rej;r.readAsText(f);});
 function upload(ev){
+  if(SERVER){srvUploadFiles(ev);return;}
   const files=Array.from(ev.target.files||[]);
   (async()=>{
     for(let i=0;i<files.length;i++){
@@ -326,6 +434,7 @@ function exportDesigns(){
   })();
 }
 function importDesigns(ev){
+  if(SERVER){srvImportFiles(ev);return;}
   const files=Array.from(ev.target.files||[]);if(!files.length)return;
   (async()=>{
     let added=0;
@@ -356,21 +465,29 @@ function applyMode(){
   b.textContent=seller?'Seller':'Buyer';b.classList.toggle('cust',!seller);
   btn.textContent=seller?'Switch to Buyer':'Switch to Seller';
   btn.style.color=seller?'#d4a843':'#ff8c00';btn.style.borderColor=seller?'#d4a843':'#ff8c00';
-  buildGrid();
+  buildGrid();refreshAdminUi();
 }
 function toggleMode(){
-  if(APP_MODE==='customer'){
-    const pwd=prompt('Enter Seller Password:');
-    if(pwd===null)return;
-    if(pwd!==SELLER_PASSWORD){alert('Incorrect password.');return;}
-    APP_MODE='seller';
-  }else APP_MODE='customer';
-  applyMode();
+  const row=document.getElementById('pwrow');
+  if(APP_MODE==='seller'){APP_MODE='customer';row.hidden=true;PPAdmin.logout();applyMode();return;}
+  row.hidden=!row.hidden;if(!row.hidden)document.getElementById('pwin').focus();
+}
+async function submitPw(){
+  const i=document.getElementById('pwin'),m=document.getElementById('pwmsg'),pw=i.value;
+  if(SERVER){
+    m.textContent='Checking\u2026';
+    const r=await PPAdmin.login(pw);
+    if(!r.ok){m.textContent=r.error;return;}
+  }else if(pw!==SELLER_PASSWORD){m.textContent='Incorrect password.';return;}
+  i.value='';m.textContent='';document.getElementById('pwrow').hidden=true;APP_MODE='seller';applyMode();
 }
 
 function init(){
   buildSizes();buildGrid();buildPrev();render();
-  loadCustomDesigns().then(loadPublishedDesigns);
+  srvStart().then(async ok=>{
+    if(ok){preAll();buildGrid();buildPrev();render();refreshAdminUi();return;}
+    await loadCustomDesigns();await loadPublishedDesigns();refreshAdminUi();
+  });
 }
 window.addEventListener('DOMContentLoaded',init);
 </script>

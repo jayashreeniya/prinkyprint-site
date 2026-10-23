@@ -1,0 +1,13 @@
+{
+  "name": "prinkyprint-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Prinky Print static site with serverless admin API (Vercel Blob)",
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

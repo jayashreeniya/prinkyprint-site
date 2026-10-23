@@ -1,2 +1,5 @@
 netlify-deploy/
 *.log
+node_modules/
+.vercel/
+.env*
