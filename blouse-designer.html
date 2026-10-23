@@ -244,6 +244,8 @@ function refreshAdminUi(){
   if(mig){mig.style.display=(SERVER&&seller&&n)?'':'none';mig.textContent='Move '+n+' existing design'+(n===1?'':'s')+' online';}
   if(SERVER&&g('expbtn'))g('expbtn').style.display='none';
   const note=g('snote');
+  if(note&&!SERVER&&seller&&PPAdmin.lastError)note.innerHTML='<b style="color:#b3261e">Online storage is not connected</b> ('+PPAdmin.lastError+'). Designs you add here are saved on this device only, so buyers will not see them. Check the Vercel setup steps: Blob store connected, ADMIN_PASSWORD set, then redeploy.';
+  if(note&&!SERVER&&seller&&PPAdmin.lastError)note.hidden=false,note.style.display='block';
   if(note&&SERVER)note.innerHTML=n
     ?'<b>Seller:</b> this site now stores designs online. Tap <b>Move '+n+' existing design'+(n===1?'':'s')+' online</b> once. After that, anything you add or delete goes live for all buyers straight away.'
     :'<b>Seller:</b> designs you add or delete here go live for all buyers straight away. You can pick several pictures at once.';

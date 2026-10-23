@@ -18,13 +18,17 @@
   function must(r, fallback) { if (!r.ok) { var e = new Error((r.data && r.data.error) || fallback); e.status = r.status; throw e; } return r.data; }
   window.PPAdmin = {
     // -> { exists, designs:[{id,label,src}], config } or null when there is no working server
+    lastError: '',
     load: async function (product) {
+      var self = window.PPAdmin;
       try {
         var r = await fetch('/api/data?product=' + encodeURIComponent(product) + '&t=' + Date.now(), { cache: 'no-store' });
-        if (!r.ok) return null;
-        var j = await r.json();
-        return j && Array.isArray(j.designs) ? j : null;
-      } catch (e) { return null; }
+        var j = null; try { j = await r.json(); } catch (e) {}
+        if (!r.ok) { self.lastError = 'server replied ' + r.status + (j && j.error ? ': ' + j.error : ''); return null; }
+        if (!j || !Array.isArray(j.designs)) { self.lastError = 'unexpected reply from /api/data'; return null; }
+        self.lastError = '';
+        return j;
+      } catch (e) { self.lastError = 'could not reach /api/data'; return null; }
     },
     login: async function (pw) {
       setPw(pw);
