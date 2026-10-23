@@ -3,92 +3,246 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRK Enterprises - Prinky Print</title>
+  <title>Prinky Print by SRK | Custom Printed Totes, Tees, Mugs & Blouses</title>
+  <meta name="description" content="Prinky Print by SRK Enterprises. Design your own printed tote bag, t-shirt or saree blouse online. Custom and bulk orders on WhatsApp." />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    :root{--teal:#1a9e8f;--cream:#fdf8f2;--ink:#2d2320;--muted:#6b6560}
+    :root{
+      --teal:#0f6f64; --teal-d:#0a524a; --teal-l:#e3f1ee;
+      --cream:#faf6ef; --paper:#fffdf9; --ink:#231d1a; --muted:#6a625c; --line:#e8e0d4;
+      --gold:#d99a2b; --plum:#6e3f86; --rose:#c4513d;
+      --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--ink)}
-    .hero{padding:56px 20px 36px;text-align:center;background:linear-gradient(135deg,#e6f7f5,#fdf8f2,#fff0e8)}
-    .badge{display:inline-block;background:#e6f7f5;color:var(--teal);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-    h1{margin:14px 0 10px;font-size:clamp(30px,5vw,52px);line-height:1.1}
-    .sub{max-width:720px;margin:0 auto;color:var(--muted);font-size:18px;line-height:1.6}
-    .btn{display:inline-block;margin-top:18px;background:var(--teal);color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700}
-    .sec{padding:54px 20px}
-    .wrap{max-width:1100px;margin:0 auto}
-    .title{text-align:center;font-size:36px;margin:0 0 8px}
-    .desc{text-align:center;color:var(--muted);margin:0 0 26px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;align-items:stretch}
-    .card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;flex-direction:column;height:100%}
-    .thumb{height:320px;background:#000;display:flex;align-items:center;justify-content:center;padding:10px}
-    .thumb img{width:100%;height:100%;object-fit:contain;display:block}
-    .label{padding:12px 14px;text-align:center;font-weight:700;margin-top:auto}
-    .cta{padding:52px 20px;text-align:center;background:linear-gradient(135deg,#7b4fa6,#a066c8);color:#fff}
-    .cta a{display:inline-block;margin-top:12px;background:#fff;color:#7b4fa6;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:700}
-    .contact{padding:52px 20px;text-align:center;background:linear-gradient(135deg,#1a9e8f,#0d7a6e);color:#fff}
-    .contact .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
-    .wa{background:#25d366;color:#fff;text-decoration:none;padding:11px 18px;border-radius:999px;font-weight:700}
-    footer{background:#2d2320;color:rgba(255,255,255,.65);text-align:center;padding:18px 12px;font-size:14px}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+    img{max-width:100%;display:block}
+    a{color:inherit}
+    .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+    h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.12;margin:0;letter-spacing:-.01em}
+    .eyebrow{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
+
+    /* nav */
+    .nav{position:sticky;top:0;z-index:20;background:rgba(250,246,239,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:76px}
+    .brand img{height:62px;width:auto;mix-blend-mode:multiply}
+    .links{display:flex;gap:28px;align-items:center;font-size:14px;font-weight:500}
+    .links a{text-decoration:none;color:var(--muted)}
+    .links a:hover{color:var(--ink)}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff!important;text-decoration:none;padding:11px 22px;border-radius:999px;font-weight:600;font-size:14px;transition:.2s}
+    .pill:hover{background:var(--teal-d);transform:translateY(-1px)}
+    .pill.ghost{background:transparent;color:var(--ink)!important;border:1.5px solid var(--ink)}
+    .pill.ghost:hover{background:var(--ink);color:#fff!important}
+
+    /* hero */
+    .hero{padding:72px 0 80px;position:relative;overflow:hidden}
+    .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+    .hero h1{font-size:clamp(38px,5.4vw,66px);margin:16px 0 20px}
+    .hero h1 em{font-style:italic;color:var(--teal)}
+    .hero p.lead{font-size:18px;color:var(--muted);max-width:520px;margin:0 0 30px}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+    .trust{display:flex;gap:26px;flex-wrap:wrap;margin-top:38px;padding-top:24px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+    .trust b{display:block;color:var(--ink);font-family:var(--serif);font-size:19px;font-weight:600}
+    .hero-art{position:relative}
+    .hero-art .frame{border-radius:200px 200px 28px 28px;overflow:hidden;background:#111;aspect-ratio:4/5;box-shadow:0 30px 60px -24px rgba(35,29,26,.45)}
+    .hero-art .frame img{width:100%;height:100%;object-fit:cover}
+    .hero-art .chip{position:absolute;left:-18px;bottom:36px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px 16px;box-shadow:0 14px 30px -14px rgba(0,0,0,.3);font-size:13px;line-height:1.35}
+    .hero-art .chip b{display:block;font-family:var(--serif);font-size:16px}
+    .blob{position:absolute;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.5}
+    .blob.a{width:380px;height:380px;background:#cfe8e3;top:-80px;right:-60px}
+    .blob.b{width:300px;height:300px;background:#f8dfc0;bottom:-90px;left:-70px}
+
+    /* sections */
+    section.s{padding:84px 0}
+    .head{max-width:620px;margin-bottom:44px}
+    .head h2{font-size:clamp(30px,4vw,44px);margin:10px 0 12px}
+    .head p{color:var(--muted);margin:0;font-size:17px}
+
+    /* designer cards */
+    .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .tool{background:var(--paper);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:.25s}
+    .tool:hover{transform:translateY(-5px);box-shadow:0 24px 44px -24px rgba(35,29,26,.35)}
+    .tool .ph{height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+    .tool .ph img{width:100%;height:100%;object-fit:cover}
+    .tool .ph.blouse{background:linear-gradient(145deg,#6e3f86,#a45bb0)}
+    .tool .ph.tote{background:#f4efe9}
+    .tool .ph.tote img{object-fit:cover;object-position:center 40%}
+    .tool .ph.tee{background:#111}
+    .tool .ph.tee img{object-position:center 30%}
+    .tool .bd{padding:24px 26px 28px;display:flex;flex-direction:column;gap:10px;flex:1}
+    .tool h3{font-size:24px}
+    .tool p{margin:0;color:var(--muted);font-size:15px;flex:1}
+    .go{margin-top:8px;font-weight:600;font-size:14px;color:var(--teal);display:inline-flex;gap:8px;align-items:center}
+    .tool:hover .go{gap:12px}
+    .tag{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.92);color:var(--ink);font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;letter-spacing:.04em}
+
+    /* steps */
+    .steps{background:var(--teal-d);color:#fff}
+    .steps .eyebrow{color:#9fd8cf}
+    .steps .head p{color:rgba(255,255,255,.75)}
+    .st{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+    .st div{border-top:1px solid rgba(255,255,255,.25);padding-top:18px}
+    .st span{font-family:var(--serif);font-size:34px;color:var(--gold)}
+    .st h3{font-size:20px;margin:6px 0 6px}
+    .st p{margin:0;font-size:14.5px;color:rgba(255,255,255,.75)}
+
+    /* gallery */
+    .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .gal figure{margin:0;border-radius:22px;overflow:hidden;background:#111;position:relative;aspect-ratio:3/4}
+    .gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+    .gal figure:hover img{transform:scale(1.04)}
+    .gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 18px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;font-family:var(--serif);font-size:19px}
+
+    /* contact */
+    .contact{background:var(--paper);border-top:1px solid var(--line)}
+    .cbox{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;border-radius:32px;padding:56px}
+    .cbox h2{font-size:clamp(30px,4vw,44px)}
+    .cbox p{color:rgba(255,255,255,.85);margin:12px 0 0;font-size:17px}
+    .wa-list{display:flex;flex-direction:column;gap:12px}
+    .wa{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;color:var(--ink);text-decoration:none;padding:16px 22px;border-radius:16px;font-weight:600;transition:.2s}
+    .wa:hover{transform:translateX(4px)}
+    .wa small{display:block;color:var(--muted);font-weight:400;font-size:12.5px}
+    .wa i{font-style:normal;background:#25d366;color:#fff;border-radius:999px;padding:8px 16px;font-size:13px}
+
+    footer{padding:36px 0;font-size:13.5px;color:var(--muted)}
+    footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+    footer img{height:44px;width:auto;mix-blend-mode:multiply}
+
+    @media (max-width:900px){
+      .links a:not(.pill){display:none}
+      .hero{padding:40px 0 56px}
+      .hero .wrap{grid-template-columns:1fr;gap:40px}
+      .hero-art{max-width:420px;margin:0 auto}
+      .hero-art .chip{left:8px}
+      .tools,.gal{grid-template-columns:1fr}
+      .st{grid-template-columns:1fr 1fr}
+      .cbox{grid-template-columns:1fr;padding:36px 24px}
+      section.s{padding:60px 0}
+      .gal figure{aspect-ratio:4/5}
+    }
+    @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
-  <section class="hero">
-    <span class="badge">SRK Enterprises</span>
-    <h1>Colourful Prints,<br><span style="color:#1a9e8f">Crafted with Love</span></h1>
-    <p class="sub">Sample products from our print studio. For pricing and custom orders, contact us on WhatsApp.</p>
-    <a class="btn" href="#samples">View Samples</a>
-  </section>
-
-  <section id="samples" class="sec">
+  <header class="nav">
     <div class="wrap">
-      <h2 class="title">Sample Products</h2>
-      <p class="desc">Tote bag, coffee mug, and t-shirt samples</p>
-      <div class="grid">
-        <article class="card">
-          <div class="thumb"><img src="/sample-totebag.png" alt="Tote Bag Sample" /></div>
-          <div class="label">Tote Bag Sample</div>
-        </article>
-        <article class="card">
-          <div class="thumb"><img src="/sample-coffee-mug.png" alt="Coffee Mug Sample" /></div>
-          <div class="label">Coffee Mug Sample</div>
-        </article>
-        <article class="card">
-          <div class="thumb"><img src="/sample-tshirt.png" alt="T-Shirt Sample" /></div>
-          <div class="label">T-Shirt Sample</div>
-        </article>
+      <a class="brand" href="/"><img src="/logo-crop.png" alt="Prinky Print by SRK" /></a>
+      <nav class="links">
+        <a href="#design">Design your own</a>
+        <a href="#how">How it works</a>
+        <a href="#samples">Our work</a>
+        <a class="pill" href="#contact">Order on WhatsApp</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="blob a"></div><div class="blob b"></div>
+      <div class="wrap">
+        <div>
+          <span class="eyebrow">SRK Enterprises &middot; Print Studio</span>
+          <h1>Colourful prints, <em>crafted with love.</em></h1>
+          <p class="lead">Choose a design, see it on a tote, tee or saree blouse, and order in minutes. Made-to-order printing for gifts, brands and everyday style.</p>
+          <div class="cta-row">
+            <a class="pill" href="#design">Start designing</a>
+            <a class="pill ghost" href="#samples">See our work</a>
+          </div>
+          <div class="trust">
+            <div><b>3 designers</b>Tote, tee &amp; blouse</div>
+            <div><b>Custom &amp; bulk</b>Gifting and events</div>
+            <div><b>Cotton tees &amp; totes</b>Everyday quality</div>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="frame"><img src="/sample-totebag.png" alt="Smiling woman carrying a printed cotton tote bag" /></div>
+          <div class="chip"><b>Elephant kalamkari tote</b>Natural cotton, centre print</div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="cta">
-    <h2 style="margin:0 0 8px;font-size:34px">Design Your Own Saree Blouse</h2>
-    <p style="margin:0 auto 4px;max-width:700px;color:rgba(255,255,255,.9)">Use our blouse designer tool to customize color, motifs and placements.</p>
-    <a href="/blouse-designer.html" target="_blank" rel="noopener noreferrer">Open Blouse Designer</a>
-  </section>
+    <section class="s" id="design" style="padding-top:20px">
+      <div class="wrap">
+        <div class="head">
+          <span class="eyebrow">Design studio</span>
+          <h2>Pick a product, preview it instantly</h2>
+          <p>Our online designers show your chosen print on the product before you order.</p>
+        </div>
+        <div class="tools">
+          <a class="tool" href="/totebag-designer.html">
+            <div class="ph tote"><span class="tag">Natural cotton</span><img src="/totebag-straight.jpg" alt="Plain natural cotton tote bag" /></div>
+            <div class="bd"><h3>Tote Bag Designer</h3><p>Choose a design and see it printed in the centre of our natural cotton tote. Print sizes 11&times;11 or 12&times;12 in.</p><span class="go">Open designer &rarr;</span></div>
+          </a>
+          <a class="tool" href="/tshirt-designer.html">
+            <div class="ph tee"><span class="tag">Men &amp; Women</span><img src="/sample-tshirt.png" alt="Yellow printed t-shirt" /></div>
+            <div class="bd"><h3>T-Shirt Designer</h3><p>Pick men or women, colour and size, then place your design on the front or back of a round-collar cotton tee.</p><span class="go">Open designer &rarr;</span></div>
+          </a>
+          <a class="tool" href="/blouse-designer.html">
+            <div class="ph blouse"><span class="tag">Saree blouse</span>
+              <svg viewBox="0 0 200 200" width="170" height="170" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.2" opacity=".9"><circle cx="100" cy="100" r="18"/><g id="p"><ellipse cx="100" cy="64" rx="11" ry="22"/></g><use href="#p" transform="rotate(45 100 100)"/><use href="#p" transform="rotate(90 100 100)"/><use href="#p" transform="rotate(135 100 100)"/><use href="#p" transform="rotate(180 100 100)"/><use href="#p" transform="rotate(225 100 100)"/><use href="#p" transform="rotate(270 100 100)"/><use href="#p" transform="rotate(315 100 100)"/><circle cx="100" cy="100" r="86" stroke-dasharray="2 7"/></g></svg>
+            </div>
+            <div class="bd"><h3>Saree Blouse Designer</h3><p>Customise colour, motifs and placement to match your saree, and see the blouse come together.</p><span class="go">Open designer &rarr;</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
 
-  <section class="cta" style="background:linear-gradient(135deg,#1a9e8f,#0d7a6e)">
-    <h2 style="margin:0 0 8px;font-size:34px">Design Your Own Tote Bag</h2>
-    <p style="margin:0 auto 4px;max-width:700px;color:rgba(255,255,255,.9)">Choose a design and see it printed in the centre of our natural cotton tote bag.</p>
-    <a href="/totebag-designer.html" target="_blank" rel="noopener noreferrer" style="color:#0d7a6e">Open Tote Bag Designer</a>
-  </section>
+    <section class="s steps" id="how">
+      <div class="wrap">
+        <div class="head">
+          <span class="eyebrow">How it works</span>
+          <h2>From idea to your doorstep</h2>
+          <p>Four simple steps, and we are on WhatsApp whenever you need us.</p>
+        </div>
+        <div class="st">
+          <div><span>01</span><h3>Choose</h3><p>Open a designer and pick the product and colour.</p></div>
+          <div><span>02</span><h3>Preview</h3><p>Try designs and sizes and see the result at once.</p></div>
+          <div><span>03</span><h3>Message us</h3><p>Send your selection on WhatsApp for price and timeline.</p></div>
+          <div><span>04</span><h3>We print</h3><p>Your order is printed with care and delivered.</p></div>
+        </div>
+      </div>
+    </section>
 
-  <section class="cta" style="background:linear-gradient(135deg,#2d2320,#4a3a34)">
-    <h2 style="margin:0 0 8px;font-size:34px">Design Your Own T-Shirt</h2>
-    <p style="margin:0 auto 4px;max-width:700px;color:rgba(255,255,255,.9)">Choose men or women, colour, size and design, and print it on the front or back.</p>
-    <a href="/tshirt-designer.html" target="_blank" rel="noopener noreferrer" style="color:#2d2320">Open T-Shirt Designer</a>
-  </section>
+    <section class="s" id="samples">
+      <div class="wrap">
+        <div class="head">
+          <span class="eyebrow">Our work</span>
+          <h2>Made in our print studio</h2>
+          <p>A few recent samples. Every piece can be customised.</p>
+        </div>
+        <div class="gal">
+          <figure><img src="/sample-totebag.png" alt="Printed tote bag sample" /><figcaption>Tote bags</figcaption></figure>
+          <figure><img src="/sample-coffee-mug.png" alt="Printed coffee mug sample" /><figcaption>Coffee mugs</figcaption></figure>
+          <figure><img src="/sample-tshirt.png" alt="Printed t-shirt sample" /><figcaption>T-shirts</figcaption></figure>
+        </div>
+      </div>
+    </section>
 
-  <section class="contact">
-    <h2 style="margin:0 0 6px;font-size:34px">Get in Touch</h2>
-    <p style="margin:0;color:rgba(255,255,255,.9)">For custom orders and bulk requirements</p>
-    <div class="row">
-      <a class="wa" href="https://wa.me/919840037602" target="_blank" rel="noopener noreferrer">WhatsApp: 98400 37602</a>
-      <a class="wa" href="https://wa.me/918754738777" target="_blank" rel="noopener noreferrer">WhatsApp: 87547 38777</a>
-    </div>
-  </section>
+    <section class="s contact" id="contact">
+      <div class="wrap">
+        <div class="cbox">
+          <div>
+            <span class="eyebrow" style="color:#9fd8cf">Get in touch</span>
+            <h2 style="margin-top:10px">Custom orders &amp; bulk requirements</h2>
+            <p>For pricing, custom designs, corporate gifting and events, message us on WhatsApp.</p>
+          </div>
+          <div class="wa-list">
+            <a class="wa" href="https://wa.me/919840037602" target="_blank" rel="noopener noreferrer"><span><small>WhatsApp</small>98400 37602</span><i>Chat</i></a>
+            <a class="wa" href="https://wa.me/918754738777" target="_blank" rel="noopener noreferrer"><span><small>WhatsApp</small>87547 38777</span><i>Chat</i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    &copy; <span id="y"></span> SRK Enterprises - Prinky Print. All rights reserved.
+    <div class="wrap">
+      <img src="/logo-crop.png" alt="Prinky Print by SRK" />
+      <span>&copy; <span id="y"></span> SRK Enterprises &middot; Prinky Print. All rights reserved.</span>
+    </div>
   </footer>
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
