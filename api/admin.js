@@ -1,7 +1,7 @@
 // POST /api/admin   body: { password, action, product, ... }
-// Actions: login | addDesign | deleteDesign | renameDesign | saveConfig
-import { readJson, writeJson, putImage, deleteByUrl } from './_store.js';
-import { PRODUCTS, dataPath, send, passwordOk, emptyDoc } from './_shared.js';
+// Actions: login | addDesign | deleteDesign | saveConfig
+import { putImage, deleteByUrl } from './_store.js';
+import { PRODUCTS, send, passwordOk, listDesigns, listBlobsFor, fileName, ensureMarker, writeJson, configPath } from './_shared.js';
 
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 const MAX_DESIGNS = 400;
@@ -33,50 +33,36 @@ export default async function handler(req, res) {
   if (!PRODUCTS.includes(product)) return send(res, 400, { error: 'Unknown product' });
 
   try {
-    const doc = (await readJson(dataPath(product))) || emptyDoc();
-
     if (action === 'addDesign') {
       const m = /^data:(image\/(?:webp|jpeg|png));base64,([A-Za-z0-9+/=]+)$/.exec(String(body.dataUrl || ''));
       if (!m) return send(res, 400, { error: 'Please upload a PNG, JPG or WebP image' });
       const buf = Buffer.from(m[2], 'base64');
       if (buf.length > MAX_IMAGE_BYTES) return send(res, 413, { error: 'Image is too large' });
-      if (doc.designs.length >= MAX_DESIGNS) return send(res, 400, { error: 'Design limit reached' });
+      const count = (await listBlobsFor(product)).length;
+      if (count >= MAX_DESIGNS) return send(res, 400, { error: 'Design limit reached' });
       const id = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-      const src = await putImage(`designs/${product}/${id}.${EXT[m[1]]}`, buf, m[1]);
-      const design = { id, label: cleanLabel(body.label, 'Design ' + (doc.designs.length + 1)), src };
-      doc.designs.push(design);
-      doc.updatedAt = Date.now();
-      await writeJson(dataPath(product), doc);
-      return send(res, 200, { ok: true, design });
+      const label = cleanLabel(body.label, 'Design ' + (count + 1));
+      const src = await putImage(fileName(product, id, label, EXT[m[1]]), buf, m[1]);
+      await ensureMarker(product);
+      return send(res, 200, { ok: true, design: { id, label, src } });
     }
 
     if (action === 'deleteDesign') {
-      const i = doc.designs.findIndex((d) => d.id === body.id);
-      if (i === -1) return send(res, 404, { error: 'Design not found' });
-      const [gone] = doc.designs.splice(i, 1);
-      doc.updatedAt = Date.now();
-      await writeJson(dataPath(product), doc);   // remove from the list first, so buyers never see a broken image
-      try { await deleteByUrl(gone.src); } catch (e) { console.error('image delete failed', e); }
+      const id = String(body.id || '');
+      const hit = (await listDesigns(product)).find((d) => d.id === id);
+      if (!hit) return send(res, 404, { error: 'Design not found' });
+      await deleteByUrl(hit.src);
       return send(res, 200, { ok: true });
-    }
-
-    if (action === 'renameDesign') {
-      const d = doc.designs.find((x) => x.id === body.id);
-      if (!d) return send(res, 404, { error: 'Design not found' });
-      d.label = cleanLabel(body.label, d.label);
-      doc.updatedAt = Date.now();
-      await writeJson(dataPath(product), doc);
-      return send(res, 200, { ok: true, design: d });
     }
 
     if (action === 'saveConfig') {
       if (product !== 'tshirt') return send(res, 400, { error: 'Only the t-shirt page has settings' });
       const cfg = validConfig(body.config);
       if (!cfg) return send(res, 400, { error: 'Invalid settings' });
-      doc.config = cfg;
-      doc.updatedAt = Date.now();
-      await writeJson(dataPath(product), doc);
-      return send(res, 200, { ok: true, updatedAt: doc.updatedAt });
+      const updatedAt = Date.now();
+      await writeJson(configPath(product), { updatedAt, ...cfg });
+      await ensureMarker(product);
+      return send(res, 200, { ok: true, updatedAt });
     }
 
     return send(res, 400, { error: 'Unknown action' });
