@@ -92,13 +92,16 @@
     .st p{margin:0;font-size:14.5px;color:rgba(255,255,255,.75)}
 
     /* gallery */
-    .gal{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-    .gal figure{margin:0;border-radius:22px;overflow:hidden;background:#111;position:relative;aspect-ratio:4/5}
-    .gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-    .gal figure:hover img{transform:scale(1.04)}
-    .gal figure.mugs{background:#efe6d8;grid-column:1/-1;aspect-ratio:3.2/1}
-    .gal figure.mugs img{object-fit:contain;padding:22px 20px 56px}
-    .gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 18px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;font-family:var(--serif);font-size:19px}
+    .gal{display:grid;grid-template-columns:1fr;gap:20px}
+    .gal figure{margin:0;border-radius:22px;overflow:hidden;background:#efe6d8;position:relative;aspect-ratio:2.3/1}
+    .gal img{width:100%;height:100%;object-fit:contain;padding:18px 18px 52px;transition:transform .5s}
+    .gal figure:hover img{transform:scale(1.02)}
+    .gal figure:first-child{background:#f4efe9}
+    .gal figure:first-child{aspect-ratio:2/1}
+    .gal figure:first-child img{padding:0 0 40px}
+    .gal figure.tees{aspect-ratio:3.4/1}
+    .gal figure.mugs{aspect-ratio:3.2/1}
+        .gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 22px 14px;font-family:var(--serif);font-size:19px;color:var(--ink)}
 
     /* contact */
     .contact{background:var(--paper);border-top:1px solid var(--line)}
@@ -122,12 +125,13 @@
       .hero-art{max-width:420px;margin:0 auto}
       .hero-art .chip{left:8px}
       .tools,.gal{grid-template-columns:1fr}
-      .gal figure.mugs{aspect-ratio:1.6/1}
+      .gal figure,.gal figure:first-child,.gal figure.tees,.gal figure.mugs{aspect-ratio:auto;overflow-x:auto}
+      .gal img{width:auto;height:auto;min-width:640px;padding:16px 16px 48px}
+      .gal figure:first-child img{padding:0 0 48px}
       .hero-art{max-width:340px}
       .st{grid-template-columns:1fr 1fr}
       .cbox{grid-template-columns:1fr;padding:36px 24px}
       section.s{padding:60px 0}
-      .gal figure{aspect-ratio:4/5}
     }
     @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
   </style>
@@ -179,11 +183,11 @@
         </div>
         <div class="tools">
           <a class="tool" href="/totebag-designer.html">
-            <div class="ph tote"><span class="tag">Natural cotton</span><img src="/sample-totes.jpg" alt="Natural cotton tote bags printed with a peacock and a coffee cup design" /></div>
+            <div class="ph tote"><span class="tag">Natural cotton</span><img src="/card-tote.jpg" alt="Natural cotton tote bag printed with a peacock design" /></div>
             <div class="bd"><h3>Tote Bag Designer</h3><p>Choose a design and see it printed in the centre of our natural cotton tote. Print sizes 11&times;11 or 12&times;12 in.</p><span class="go">Open designer &rarr;</span></div>
           </a>
           <a class="tool" href="/tshirt-designer.html">
-            <div class="ph tee"><span class="tag">Men &amp; Women</span><img src="/sample-tees.png" alt="Printed round-neck t-shirts in blue, pink and navy" /></div>
+            <div class="ph tee"><span class="tag">Men &amp; Women</span><img src="/card-tee.png" alt="Blue round-neck t-shirt printed with a butterfly and flowers" /></div>
             <div class="bd"><h3>T-Shirt Designer</h3><p>Pick men or women, colour and size, then place your design on the front or back of a round-collar cotton tee.</p><span class="go">Open designer &rarr;</span></div>
           </a>
           <a class="tool" href="/blouse-designer.html">
@@ -218,8 +222,8 @@
           <p>A few recent samples. Every piece can be customised.</p>
         </div>
         <div class="gal">
-          <figure><img src="/sample-totebag.png" style="object-position:center top" alt="Printed tote bag sample" /><figcaption>Tote bags</figcaption></figure>
-          <figure><img src="/sample-tshirt.png" alt="Printed t-shirt sample" /><figcaption>T-shirts</figcaption></figure>
+          <figure><img src="/samples-totes.jpg" alt="Four natural cotton tote bags with peacock, coffee, Ganesha and Decoction is an Emotion prints" /><figcaption>Tote bags</figcaption></figure>
+          <figure class="tees"><img src="/samples-tees.png" alt="Four printed round-neck t-shirts" /><figcaption>T-shirts</figcaption></figure>
           <figure class="mugs"><img src="/sample-mugs.png" alt="Four printed ceramic mugs" /><figcaption>Printed mugs</figcaption></figure>
         </div>
       </div>
