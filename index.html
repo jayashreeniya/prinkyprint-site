@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prinky Print by SRK | Custom Printed Totes, Tees, Mugs & Blouses</title>
-  <meta name="description" content="Prinky Print by SRK Enterprises. Design your own printed tote bag, t-shirt or saree blouse online. Custom and bulk orders on WhatsApp." />
+  <title>Prinky Print | Custom Printed Totes, Tees, Mugs & Blouses</title>
+  <meta name="description" content="Prinky Print by LV Media Creations. Design your own printed tote bag, t-shirt or saree blouse online. Custom and bulk orders on WhatsApp." />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,8 +47,8 @@
     .trust{display:flex;gap:26px;flex-wrap:wrap;margin-top:38px;padding-top:24px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
     .trust b{display:block;color:var(--ink);font-family:var(--serif);font-size:19px;font-weight:600}
     .hero-art{position:relative}
-    .hero-art .frame{border-radius:200px 200px 28px 28px;overflow:hidden;background:#111;aspect-ratio:4/5;box-shadow:0 30px 60px -24px rgba(35,29,26,.45)}
-    .hero-art .frame img{width:100%;height:100%;object-fit:cover}
+    .hero-art .frame{border-radius:200px 200px 28px 28px;overflow:hidden;background:#000;aspect-ratio:768/1187;box-shadow:0 30px 60px -24px rgba(35,29,26,.45)}
+    .hero-art .frame img{width:100%;height:100%;object-fit:cover;object-position:center top}
     .hero-art .chip{position:absolute;left:-18px;bottom:36px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px 16px;box-shadow:0 14px 30px -14px rgba(0,0,0,.3);font-size:13px;line-height:1.35}
     .hero-art .chip b{display:block;font-family:var(--serif);font-size:16px}
     .blob{position:absolute;z-index:-1;border-radius:50%;filter:blur(60px);opacity:.5}
@@ -67,9 +67,10 @@
     .tool:hover{transform:translateY(-5px);box-shadow:0 24px 44px -24px rgba(35,29,26,.35)}
     .tool .ph{height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
     .tool .ph img{width:100%;height:100%;object-fit:cover}
-    .tool .ph.blouse{background:linear-gradient(145deg,#6e3f86,#a45bb0)}
+    .tool .ph.blouse{background:#efe6d8}
+    .tool .ph.blouse img{object-fit:contain;padding:18px}
     .tool .ph.tote{background:#f4efe9}
-    .tool .ph.tote img{object-fit:cover;object-position:center 40%}
+    .tool .ph.tote img{object-fit:contain;padding:8px}
     .tool .ph.tee{background:#111}
     .tool .ph.tee img{object-position:center 30%}
     .tool .bd{padding:24px 26px 28px;display:flex;flex-direction:column;gap:10px;flex:1}
@@ -90,10 +91,12 @@
     .st p{margin:0;font-size:14.5px;color:rgba(255,255,255,.75)}
 
     /* gallery */
-    .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-    .gal figure{margin:0;border-radius:22px;overflow:hidden;background:#111;position:relative;aspect-ratio:3/4}
+    .gal{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+    .gal figure{margin:0;border-radius:22px;overflow:hidden;background:#111;position:relative;aspect-ratio:4/5}
     .gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
     .gal figure:hover img{transform:scale(1.04)}
+    .gal figure.mugs{background:#efe6d8;grid-column:1/-1;aspect-ratio:3.2/1}
+    .gal figure.mugs img{object-fit:contain;padding:22px 20px 56px}
     .gal figcaption{position:absolute;left:0;right:0;bottom:0;padding:48px 20px 18px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;font-family:var(--serif);font-size:19px}
 
     /* contact */
@@ -118,6 +121,8 @@
       .hero-art{max-width:420px;margin:0 auto}
       .hero-art .chip{left:8px}
       .tools,.gal{grid-template-columns:1fr}
+      .gal figure.mugs{aspect-ratio:1.6/1}
+      .hero-art{max-width:340px}
       .st{grid-template-columns:1fr 1fr}
       .cbox{grid-template-columns:1fr;padding:36px 24px}
       section.s{padding:60px 0}
@@ -129,7 +134,7 @@
 <body>
   <header class="nav">
     <div class="wrap">
-      <a class="brand" href="/"><img src="/logo-crop.png" alt="Prinky Print by SRK" /></a>
+      <a class="brand" href="/"><img src="/logo-crop.png" alt="Prinky Print" /></a>
       <nav class="links">
         <a href="#design">Design your own</a>
         <a href="#how">How it works</a>
@@ -144,7 +149,7 @@
       <div class="blob a"></div><div class="blob b"></div>
       <div class="wrap">
         <div>
-          <span class="eyebrow">SRK Enterprises &middot; Print Studio</span>
+          <span class="eyebrow">LV Media Creations &middot; Print Studio</span>
           <h1>Colourful prints, <em>crafted with love.</em></h1>
           <p class="lead">Choose a design, see it on a tote, tee or saree blouse, and order in minutes. Made-to-order printing for gifts, brands and everyday style.</p>
           <div class="cta-row">
@@ -158,7 +163,7 @@
           </div>
         </div>
         <div class="hero-art">
-          <div class="frame"><img src="/sample-totebag.png" alt="Smiling woman carrying a printed cotton tote bag" /></div>
+          <div class="frame"><img src="/hero-tote.jpg" alt="Smiling woman carrying a printed cotton tote bag" /></div>
           <div class="chip"><b>Elephant kalamkari tote</b>Natural cotton, centre print</div>
         </div>
       </div>
@@ -181,9 +186,7 @@
             <div class="bd"><h3>T-Shirt Designer</h3><p>Pick men or women, colour and size, then place your design on the front or back of a round-collar cotton tee.</p><span class="go">Open designer &rarr;</span></div>
           </a>
           <a class="tool" href="/blouse-designer.html">
-            <div class="ph blouse"><span class="tag">Saree blouse</span>
-              <svg viewBox="0 0 200 200" width="170" height="170" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.2" opacity=".9"><circle cx="100" cy="100" r="18"/><g id="p"><ellipse cx="100" cy="64" rx="11" ry="22"/></g><use href="#p" transform="rotate(45 100 100)"/><use href="#p" transform="rotate(90 100 100)"/><use href="#p" transform="rotate(135 100 100)"/><use href="#p" transform="rotate(180 100 100)"/><use href="#p" transform="rotate(225 100 100)"/><use href="#p" transform="rotate(270 100 100)"/><use href="#p" transform="rotate(315 100 100)"/><circle cx="100" cy="100" r="86" stroke-dasharray="2 7"/></g></svg>
-            </div>
+            <div class="ph blouse"><span class="tag">Saree blouse</span><img src="/sample-blouse.png" alt="Dark green blouse fabric with printed leaf motifs" /></div>
             <div class="bd"><h3>Saree Blouse Designer</h3><p>Customise colour, motifs and placement to match your saree, and see the blouse come together.</p><span class="go">Open designer &rarr;</span></div>
           </a>
         </div>
@@ -214,9 +217,9 @@
           <p>A few recent samples. Every piece can be customised.</p>
         </div>
         <div class="gal">
-          <figure><img src="/sample-totebag.png" alt="Printed tote bag sample" /><figcaption>Tote bags</figcaption></figure>
-          <figure><img src="/sample-coffee-mug.png" alt="Printed coffee mug sample" /><figcaption>Coffee mugs</figcaption></figure>
+          <figure><img src="/sample-totebag.png" style="object-position:center top" alt="Printed tote bag sample" /><figcaption>Tote bags</figcaption></figure>
           <figure><img src="/sample-tshirt.png" alt="Printed t-shirt sample" /><figcaption>T-shirts</figcaption></figure>
+          <figure class="mugs"><img src="/sample-mugs.png" alt="Four printed ceramic mugs" /><figcaption>Printed mugs</figcaption></figure>
         </div>
       </div>
     </section>
@@ -240,8 +243,8 @@
 
   <footer>
     <div class="wrap">
-      <img src="/logo-crop.png" alt="Prinky Print by SRK" />
-      <span>&copy; <span id="y"></span> SRK Enterprises &middot; Prinky Print. All rights reserved.</span>
+      <img src="/logo-crop.png" alt="Prinky Print" />
+      <span>&copy; <span id="y"></span> LV Media Creations &middot; Prinky Print. All rights reserved.</span>
     </div>
   </footer>
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
