@@ -1,5 +1,5 @@
 // GET /api/data?product=blouse|tote|tshirt
-// Public. Returns { exists, updatedAt, designs:[{id,label,src}], config }
+// Public. Returns { exists, updatedAt, designs:[{id,label,theme,src}], config }
 import { PRODUCTS, send, listDesigns, hasMarker, readJson, configPath } from './_shared.js';
 
 export default async function handler(req, res) {
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     ]);
     const exists = marker || designs.length > 0 || !!cfg;
     const config = cfg && Array.isArray(cfg.colors) ? { colors: cfg.colors, unavail: cfg.unavail || [] } : null;
-    return send(res, 200, { exists, version: 1, updatedAt: (cfg && cfg.updatedAt) || 0, designs, config });
+    return send(res, 200, { exists, version: 1, updatedAt: (cfg && cfg.updatedAt) || 0, designs: designs.map(({ id, label, theme, src }) => ({ id, label, theme, src })), config });
   } catch (e) {
     console.error('data read failed', e);
     return send(res, 500, { error: 'Storage is not available' });

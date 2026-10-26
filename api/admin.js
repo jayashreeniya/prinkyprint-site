@@ -1,11 +1,12 @@
 // POST /api/admin   body: { password, action, product, ... }
-// Actions: login | addDesign | deleteDesign | saveConfig
-import { putImage, deleteByUrl } from './_store.js';
-import { PRODUCTS, send, passwordOk, listDesigns, listBlobsFor, fileName, ensureMarker, writeJson, configPath } from './_shared.js';
+// Actions: login | addDesign | deleteDesign | setTheme | saveConfig
+import { putImage, deleteByUrl, copyBlob } from './_store.js';
+import { PRODUCTS, send, passwordOk, listDesigns, listBlobsFor, filesForId, fileName, ensureMarker, writeJson, configPath } from './_shared.js';
 
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 const MAX_DESIGNS = 400;
 const EXT = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' };
+const cleanTheme = (s) => String(s || '').replace(/[\u0000-\u001f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 24);
 const cleanLabel = (s, fb) => String(s || fb || 'Design').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 40) || fb || 'Design';
 
 function validConfig(c) {
@@ -42,17 +43,31 @@ export default async function handler(req, res) {
       if (count >= MAX_DESIGNS) return send(res, 400, { error: 'Design limit reached' });
       const id = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       const label = cleanLabel(body.label, 'Design ' + (count + 1));
-      const src = await putImage(fileName(product, id, label, EXT[m[1]]), buf, m[1]);
+      const theme = cleanTheme(body.theme);
+      const src = await putImage(fileName(product, id, label, theme, EXT[m[1]]), buf, m[1]);
       await ensureMarker(product);
-      return send(res, 200, { ok: true, design: { id, label, src } });
+      return send(res, 200, { ok: true, design: { id, label, theme, src } });
     }
 
     if (action === 'deleteDesign') {
       const id = String(body.id || '');
       const hit = (await listDesigns(product)).find((d) => d.id === id);
       if (!hit) return send(res, 404, { error: 'Design not found' });
-      await deleteByUrl(hit.src);
+      for (const f of await filesForId(product, id)) await deleteByUrl(f.url);
       return send(res, 200, { ok: true });
+    }
+
+    if (action === 'setTheme') {
+      const id = String(body.id || '');
+      const theme = cleanTheme(body.theme);
+      const hit = (await listDesigns(product)).find((d) => d.id === id);
+      if (!hit) return send(res, 404, { error: 'Design not found' });
+      if (hit.theme === theme) return send(res, 200, { ok: true, design: { id, label: hit.label, theme, src: hit.src } });
+      const ext = hit.path.split('.').pop();
+      const label = hit.label || 'Design';
+      const src = await copyBlob(hit.src, fileName(product, id, label, theme, ext));
+      await deleteByUrl(hit.src);
+      return send(res, 200, { ok: true, design: { id, label, theme, src } });
     }
 
     if (action === 'saveConfig') {

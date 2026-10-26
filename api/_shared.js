@@ -20,21 +20,26 @@ export function passwordOk(given) {
   return crypto.timingSafeEqual(a, b);
 }
 
-// A design is one image file: designs/<product>/<id>_<base64url(label)>.<ext>
-const NAME = /^designs\/[a-z]+\/(d[0-9a-z]+)(?:_([A-Za-z0-9_-]*))?\.(webp|jpg|png)$/;   // label part is missing on files from the first version
-export function fileName(product, id, label, ext) {
-  return `${designPrefix(product)}${id}_${Buffer.from(label, 'utf8').toString('base64url')}.${ext}`;
+// A design is one image file: designs/<product>/<id>_<base64url(label)>~<base64url(theme)>.<ext>
+// (the theme part is optional, and so is the label on files from the first version)
+const NAME = /^designs\/[a-z]+\/(d[0-9a-z]+)(?:_([A-Za-z0-9_-]*))?(?:~([A-Za-z0-9_-]*))?\.(webp|jpg|png)$/;   // label part is missing on files from the first version
+const b64 = (t) => Buffer.from(t, 'utf8').toString('base64url');
+export function fileName(product, id, label, theme, ext) {
+  return `${designPrefix(product)}${id}_${b64(label)}${theme ? '~' + b64(theme) : ''}.${ext}`;
 }
 export function toDesign(b) {
   const m = NAME.exec(b.pathname);
   if (!m) return null;
   let label = '';
   try { if (m[2]) label = Buffer.from(m[2], 'base64url').toString('utf8'); } catch (e) {}
-  return { id: m[1], label, src: b.url };
+  let theme = '';
+  try { if (m[3]) theme = Buffer.from(m[3], 'base64url').toString('utf8'); } catch (e) {}
+  return { id: m[1], label, theme, src: b.url, path: b.pathname };
 }
 export async function listDesigns(product) {
   const blobs = await listBlobs(designPrefix(product));
-  const designs = blobs.map(toDesign).filter(Boolean).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  const seen = new Set();
+  const designs = blobs.map(toDesign).filter(Boolean).filter((d) => (seen.has(d.id) ? false : (seen.add(d.id), true))).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
   // Files uploaded by the first version have no label in their name; recover it from the old list if it is still there.
   if (designs.some((d) => !d.label)) {
     let legacy = null;
@@ -45,6 +50,10 @@ export async function listDesigns(product) {
   return designs;
 }
 export async function listBlobsFor(product) { return listBlobs(designPrefix(product)); }
+// every file that belongs to one design id (normally one; two for a moment while a theme change is in progress)
+export async function filesForId(product, id) {
+  return (await listBlobs(designPrefix(product))).map((b) => ({ b, d: toDesign(b) })).filter((x) => x.d && x.d.id === id).map((x) => x.b);
+}
 
 // Remember that online storage has been set up for this product (so buyers stop seeing the old static files,
 // even if every design is later deleted).

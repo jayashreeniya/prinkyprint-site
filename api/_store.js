@@ -1,7 +1,7 @@
 // Storage layer: Vercel Blob (public store).
 // Designs are the image files themselves; the list is built from the blob listing,
 // so several uploads at once can never overwrite each other.
-import { put, del, list } from '@vercel/blob';
+import { put, del, list, copy } from '@vercel/blob';
 
 // All blobs whose pathname starts with `prefix` (follows pagination).
 export async function listBlobs(prefix) {
@@ -47,4 +47,15 @@ export async function putImage(pathname, buffer, contentType) {
 
 export async function deleteByUrl(url) {
   await del(url);
+}
+
+// Copy an existing blob to a new pathname (used to change a design's theme, which lives in its file name).
+export async function copyBlob(fromUrl, toPathname) {
+  const r = await copy(fromUrl, toPathname, {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: false,
+    cacheControlMaxAge: 60 * 60 * 24 * 365,
+  });
+  return r.url;
 }
