@@ -40,7 +40,8 @@
       } catch (e) { setPw(''); return { ok: false, error: 'Could not reach the server' }; }
     },
     logout: function () { setPw(''); },
-    addDesign: async function (product, label, dataUrl) { return must(await post({ action: 'addDesign', product: product, label: label, dataUrl: dataUrl }), 'Upload failed').design; },
+    addDesign: async function (product, label, dataUrl, theme) { return must(await post({ action: 'addDesign', product: product, label: label, dataUrl: dataUrl, theme: theme || '' }), 'Upload failed').design; },
+    setTheme: async function (product, id, theme) { return must(await post({ action: 'setTheme', product: product, id: id, theme: theme || '' }), 'Could not change theme').design; },
     deleteDesign: async function (product, id) { must(await post({ action: 'deleteDesign', product: product, id: id }), 'Delete failed'); },
     saveConfig: async function (product, config) { must(await post({ action: 'saveConfig', product: product, config: config }), 'Could not save settings'); }
   };

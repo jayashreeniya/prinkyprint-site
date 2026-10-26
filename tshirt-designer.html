@@ -144,6 +144,7 @@ table.mx{border-collapse:collapse;width:100%;font-size:.72rem;}
 </div>
 <div class="toast" id="toast"></div>
 <script src="/admin-api.js"></script>
+<script src="/themes.js"></script>
 <script>
 // ── CONFIG ───────────────────────────────────────────────
 const SELLER_PASSWORD='blouse2024';          // change here to set a different seller password
@@ -206,7 +207,7 @@ let deleted=new Set();
 const PRODUCT='tshirt';
 const SRV_EXTRA={};
 let SERVER=false,SERVER_EXISTS=false,SRV_BUSY=false;
-function srvMap(d){return Object.assign({id:d.id,label:d.label,src:d.src},SRV_EXTRA);}
+function srvMap(d){return Object.assign({id:d.id,label:d.label,theme:d.theme||'',src:d.src},SRV_EXTRA);}
 const srvPending=()=>lib.filter(d=>d.src&&d.src.startsWith('data:'));
 function srvLeave(){PPAdmin.logout();if(APP_MODE==='seller')toggleMode();}
 function armDelete(btn,fn,idle){ // two-tap delete (confirm() is blocked in some viewers)
@@ -233,13 +234,20 @@ async function srvUpload(entries){
   try{
     for(let i=0;i<entries.length;i++){
       toast('Uploading '+(i+1)+' of '+entries.length+'…');
-      const d=await PPAdmin.addDesign(PRODUCT,entries[i].label,entries[i].dataUrl);
+      const d=await PPAdmin.addDesign(PRODUCT,entries[i].label,entries[i].dataUrl,PPThemes.uploadTheme(lib));
       const nd=srvMap(d);lib.push(nd);SERVER_EXISTS=true;preOne(nd);n++;buildGrid();
     }
   }catch(err){toast(err.message||'Upload failed');if(err.status===401)srvLeave();}
   finally{SRV_BUSY=false;}
   if(n)toast(n+' design'+(n>1?'s':'')+' added — live for buyers now');
   refreshAdminUi();return n;
+}
+async function srvSetTheme(d,val){
+  const t=PPThemes.canonical(val,lib);
+  if((d.theme||'')===t){buildGrid();return;}
+  try{const nd=await PPAdmin.setTheme(PRODUCT,d.id,t);d.theme=nd.theme||'';d.src=nd.src;toast(t?'Theme set to “'+t+'”':'Theme removed');}
+  catch(err){toast(err.message||'Could not change theme');if(err.status===401)srvLeave();}
+  buildGrid();buildPrev();render();
 }
 async function srvDelete(id){
   try{await PPAdmin.deleteDesign(PRODUCT,id);}catch(err){toast(err.message||'Delete failed');if(err.status===401)srvLeave();return;}
@@ -493,14 +501,16 @@ function buildPlace(){mkSeg(el('pseg'),[{v:'front',label:'Front'},{v:'back',labe
 function buildDsize(){mkSeg(el('dseg'),DSIZES.map(n=>({v:n,label:n+'×'+n+'"'})),i=>i.v===S.dsize,i=>{S.dsize=i.v;buildDsize();render();});}
 function buildGrid(){
   const g=el('dgrid');g.innerHTML='';
+  const shown=PPThemes.filter(lib);
   if(!lib.length){g.innerHTML='<div class="empty">No designs yet.'+(APP_MODE==='seller'?' Tap “Add Design” to upload.':' Please check back soon.')+'</div>';return;}
-  lib.forEach(d=>{
+  shown.forEach(d=>{
     const t=document.createElement('div');t.className='dtile'+(d.id===S.selId?' on':'');t.onclick=()=>selD(d.id);
     const img=document.createElement('img');img.src=d.src||'';img.alt=d.label||'Design';t.appendChild(img);
     const l=document.createElement('div');l.className='dlbl';l.textContent=d.label||'Design';t.appendChild(l);
     if(APP_MODE==='seller'){
       const db=document.createElement('button');db.className='delbtn';db.innerHTML='&#10005;';db.title='Delete';
       db.onclick=e=>{e.stopPropagation();armDelete(db,()=>delD(d.id),'&#10005;');};t.appendChild(db);
+      PPThemes.tag(t,d,srvSetTheme);
     }
     g.appendChild(t);
   });
