@@ -77,6 +77,7 @@ header h1 span{color:#faf7f2;}
 <script>let APP_MODE="customer";</script>
 <script src="/admin-api.js"></script>
 <script src="/themes.js"></script>
+<script src="/pricing.js"></script>
 <header>
   <h1><span>Blouse</span> Designer</h1>
   <div style="display:flex;align-items:center;gap:8px;">
@@ -98,6 +99,7 @@ header h1 span{color:#faf7f2;}
       <span class="zlbl" id="zlbl">100%</span>
       <button class="zbtn" onclick="doZoom(0.1)">+</button>
     </div>
+    <div id="ppprice" data-product="blouse"></div>
     <div class="actbar">
       <button class="abtn asave" onclick="saveImg()">&#128190; Save PNG</button>
       <button class="abtn ashare" onclick="shareWA()">&#128242; WhatsApp</button>
@@ -840,7 +842,7 @@ function saveImg(){
 function shareWA(){
   const sel=lib.find(d=>d.id===S.selId);const nm=sel?sel.label:'Not selected';
   const pl=[...S.placed].join(', ')||'None';
-  const msg=`Saree Blouse Design Enquiry\n\nDesign: ${nm}\nColour: ${S.cname}\nBack print size: ${S.bsz}\u00d7${S.bsz} inch\nPlacement: ${pl}\n\nContact: 9840037602`;
+  const msg=`Saree Blouse Design Enquiry\n\nDesign: ${nm}\nColour: ${S.cname}\nBack print size: ${S.bsz}\u00d7${S.bsz} inch\nPlacement: ${pl}\n${PPPrice.waText('blouse')}\nContact: 9840037602`;
   const url=`https://wa.me/919840037602?text=${encodeURIComponent(msg)}`;
   if(navigator.share)navigator.share({title:'Blouse Design',text:msg}).catch(()=>window.open(url,'_blank'));
   else window.open(url,'_blank');

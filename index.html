@@ -77,6 +77,8 @@
     .tool .bd{padding:24px 26px 28px;display:flex;flex-direction:column;gap:10px;flex:1}
     .tool h3{font-size:24px}
     .tool p{margin:0;color:var(--muted);font-size:15px;flex:1}
+    .tool .price{font-size:13.5px;color:var(--muted);padding:8px 12px;background:#fbf3df;border-radius:10px;line-height:1.45}
+    .tool .price b{color:#b8431a}
     .go{margin-top:8px;font-weight:600;font-size:14px;color:var(--teal);display:inline-flex;gap:8px;align-items:center}
     .tool:hover .go{gap:12px}
     .tag{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.92);color:var(--ink);font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;letter-spacing:.04em}
@@ -135,6 +137,7 @@
     }
     @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
   </style>
+  <script src="/pricing.js" defer></script>
 </head>
 <body>
   <header class="nav">
@@ -184,15 +187,15 @@
         <div class="tools">
           <a class="tool" href="/totebag-designer.html">
             <div class="ph tote"><span class="tag">Natural cotton</span><img src="/card-tote.jpg" alt="Natural cotton tote bag printed with a peacock design" /></div>
-            <div class="bd"><h3>Tote Bag Designer</h3><p>Choose a design and see it printed in the centre of our natural cotton tote. Print sizes 11&times;11 or 12&times;12 in.</p><span class="go">Open designer &rarr;</span></div>
+            <div class="bd"><h3>Tote Bag Designer</h3><p>Choose a design and see it printed in the centre of our natural cotton tote. Print sizes 11&times;11 or 12&times;12 in.</p><div class="price" data-pp="tote"></div><span class="go">Open designer &rarr;</span></div>
           </a>
           <a class="tool" href="/tshirt-designer.html">
             <div class="ph tee"><span class="tag">Men &amp; Women</span><img src="/card-tee.png" alt="Blue round-neck t-shirt printed with a butterfly and flowers" /></div>
-            <div class="bd"><h3>T-Shirt Designer</h3><p>Pick men or women, colour and size, then place your design on the front or back of a round-collar cotton tee.</p><span class="go">Open designer &rarr;</span></div>
+            <div class="bd"><h3>T-Shirt Designer</h3><p>Pick men or women, colour and size, then place your design on the front or back of a round-collar cotton tee.</p><div class="price" data-pp="tshirt"></div><span class="go">Open designer &rarr;</span></div>
           </a>
           <a class="tool" href="/blouse-designer.html">
             <div class="ph blouse"><span class="tag">Saree blouse</span><img src="/sample-blouse.png" alt="Dark green blouse fabric with printed leaf motifs" /></div>
-            <div class="bd"><h3>Saree Blouse Designer</h3><p>Customise colour, motifs and placement to match your saree, and see the blouse come together.</p><span class="go">Open designer &rarr;</span></div>
+            <div class="bd"><h3>Saree Blouse Designer</h3><p>Customise colour, motifs and placement to match your saree, and see the blouse come together.</p><div class="price" data-pp="blouse"></div><span class="go">Open designer &rarr;</span></div>
           </a>
         </div>
       </div>

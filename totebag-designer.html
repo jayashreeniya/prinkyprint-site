@@ -92,6 +92,7 @@ header h1 span{color:#faf7f2;}
       <span class="zlbl" id="zlbl">100%</span>
       <button class="zbtn" onclick="doZoom(0.1)">+</button>
     </div>
+    <div id="ppprice" data-product="tote"></div>
     <div class="actbar">
       <button class="abtn asave" onclick="saveImg()">&#128190; Save PNG</button>
       <button class="abtn ashare" onclick="shareWA()">&#128242; WhatsApp</button>
@@ -124,6 +125,7 @@ header h1 span{color:#faf7f2;}
 <div class="toast" id="toast"></div>
 <script src="/admin-api.js"></script>
 <script src="/themes.js"></script>
+<script src="/pricing.js"></script>
 <script>
 // ── CONFIG ───────────────────────────────────────────────
 const SELLER_PASSWORD='blouse2024';          // change here to set a different seller password
@@ -413,7 +415,7 @@ function saveImg(){
 }
 function shareWA(){
   const sel=lib.find(d=>d.id===S.selId),nm=sel?sel.label:'Not selected';
-  const msg=`Tote Bag Design Enquiry\n\nDesign: ${nm}\nBag: Natural cotton, 16 x 14 inch\nPrint size: ${S.size}\u00d7${S.size} inch, centre, one side\n\nContact: 9840037602`;
+  const msg=`Tote Bag Design Enquiry\n\nDesign: ${nm}\nBag: Natural cotton, 16 x 14 inch\nPrint size: ${S.size}\u00d7${S.size} inch, centre, one side\n${PPPrice.waText('tote')}\nContact: 9840037602`;
   const url=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
   if(navigator.share)navigator.share({title:'Tote Bag Design',text:msg}).catch(()=>window.open(url,'_blank'));
   else window.open(url,'_blank');

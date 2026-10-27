@@ -107,6 +107,7 @@ table.mx{border-collapse:collapse;width:100%;font-size:.72rem;}
       <span class="zlbl" id="zlbl">100%</span>
       <button class="zbtn" onclick="doZoom(0.1)">+</button>
     </div>
+    <div id="ppprice" data-product="tshirt"></div>
     <div class="actbar">
       <button class="abtn asave" onclick="saveImg()">&#128190; Save PNG</button>
       <button class="abtn ashare" onclick="shareWA()">&#128242; WhatsApp</button>
@@ -145,6 +146,7 @@ table.mx{border-collapse:collapse;width:100%;font-size:.72rem;}
 <div class="toast" id="toast"></div>
 <script src="/admin-api.js"></script>
 <script src="/themes.js"></script>
+<script src="/pricing.js"></script>
 <script>
 // ── CONFIG ───────────────────────────────────────────────
 const SELLER_PASSWORD='blouse2024';          // change here to set a different seller password
@@ -548,7 +550,7 @@ function saveImg(){
 }
 function shareWA(){
   const sel=lib.find(d=>d.id===S.selId),col=getColor(S.color);
-  const msg=`T-Shirt Design Enquiry\n\nFit: ${S.gender==='men'?'Men':'Women'}\nColour: ${col?col.name:'-'}\nSize: ${S.size||'-'}\nDesign: ${sel?sel.label:'Not selected'}\nDesign size: ${S.dsize}×${S.dsize} inch\nPlacement: ${S.place==='front'?'Front':'Back'}, centre\nRound collar cotton t-shirt\n\nContact: 9840037602`;
+  const msg=`T-Shirt Design Enquiry\n\nFit: ${S.gender==='men'?'Men':'Women'}\nColour: ${col?col.name:'-'}\nSize: ${S.size||'-'}\nDesign: ${sel?sel.label:'Not selected'}\nDesign size: ${S.dsize}×${S.dsize} inch\nPlacement: ${S.place==='front'?'Front':'Back'}, centre\nRound collar cotton t-shirt\n${PPPrice.waText('tshirt')}\nContact: 9840037602`;
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
